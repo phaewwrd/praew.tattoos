@@ -138,8 +138,8 @@ Admin Management
 
 | ID  | Feature             | Status |
 | --- | ------------------- | ------ |
-| F01 | Public Website      | TODO   |
-| F02 | Portfolio           | TODO   |
+| F01 | Public Website      | DONE   |
+| F02 | Portfolio           | DONE   |
 | F03 | Tattoo Services     | TODO   |
 | F04 | Booking             | TODO   |
 | F05 | Payment             | TODO   |
