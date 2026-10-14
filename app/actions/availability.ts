@@ -7,7 +7,7 @@ import type {
 	AvailableDates,
 	AvailableTimes,
 } from "@/lib/availability-types";
-import { failure, success, type ServerResponse } from "@/lib/server-response";
+import { failure, type ServerResponse, success } from "@/lib/server-response";
 
 export async function getAvailableDatesAction(): Promise<
 	ServerResponse<AvailableDates>

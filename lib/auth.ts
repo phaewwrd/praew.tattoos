@@ -1,7 +1,6 @@
+import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
-
-import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 
 import { db } from "@/app/db";
 import * as authSchema from "@/app/db/auth-schema";

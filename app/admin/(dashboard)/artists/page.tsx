@@ -1,9 +1,9 @@
 import { connection } from "next/server";
-import { ArtistManager } from "./artist-manager";
 import { getArtists } from "@/lib/artists";
+import { ArtistManager } from "./artist-manager";
 
 export default async function AdminArtistsPage() {
-  await connection();
-  const artists = await getArtists();
-  return <ArtistManager artists={artists} />;
+	await connection();
+	const artists = await getArtists();
+	return <ArtistManager artists={artists} />;
 }
