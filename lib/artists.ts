@@ -8,6 +8,7 @@ export type PortfolioImage = {
 	imageUrl: string;
 	imagePublicId: string | null;
 	details: string | null;
+	categoryId: number | null;
 };
 
 export type Artist = {
@@ -39,6 +40,7 @@ export async function getArtists(): Promise<Artist[]> {
 				imageUrl: portfolios.imageUrl,
 				imagePublicId: portfolios.imagePublicId,
 				details: portfolios.details,
+				categoryId: portfolios.categoryId,
 			})
 			.from(portfolios)
 			.orderBy(asc(portfolios.createdAt)),
@@ -48,12 +50,13 @@ export async function getArtists(): Promise<Artist[]> {
 		...artist,
 		portfolios: portfolioRows
 			.filter((item) => item.artistId === artist.id)
-			.map(({ id, title, imageUrl, imagePublicId, details }) => ({
+			.map(({ id, title, imageUrl, imagePublicId, details, categoryId }) => ({
 				id,
 				title,
 				imageUrl,
 				imagePublicId,
 				details,
+				categoryId,
 			})),
 	}));
 }
@@ -80,6 +83,7 @@ export async function getArtistById(id: number): Promise<Artist | null> {
 			imageUrl: portfolios.imageUrl,
 			imagePublicId: portfolios.imagePublicId,
 			details: portfolios.details,
+			categoryId: portfolios.categoryId,
 		})
 		.from(portfolios)
 		.where(eq(portfolios.artistId, id))

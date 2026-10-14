@@ -67,11 +67,31 @@ export const tattooArtists = pgTable("tattoo_artists", {
 });
 
 // ========================================
+// PORTFOLIO CATEGORIES
+// ========================================
+
+export const portfolioCategories = pgTable("portfolio_categories", {
+	id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+
+	name: varchar("name", {
+		length: 80,
+	})
+		.notNull()
+		.unique(),
+
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// ========================================
 // PORTFOLIOS
 // ========================================
 
 export const portfolios = pgTable("portfolios", {
 	id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+
+	categoryId: integer("category_id").references(() => portfolioCategories.id, {
+		onDelete: "set null",
+	}),
 
 	artistId: integer("artist_id")
 		.notNull()
@@ -347,10 +367,21 @@ export const tattooArtistsRelations = relations(tattooArtists, ({ many }) => ({
 	scheduleDateBlocks: many(scheduleDateBlocks),
 }));
 
+export const portfolioCategoriesRelations = relations(
+	portfolioCategories,
+	({ many }) => ({
+		portfolios: many(portfolios),
+	}),
+);
+
 export const portfoliosRelations = relations(portfolios, ({ one }) => ({
 	artist: one(tattooArtists, {
 		fields: [portfolios.artistId],
 		references: [tattooArtists.id],
+	}),
+	category: one(portfolioCategories, {
+		fields: [portfolios.categoryId],
+		references: [portfolioCategories.id],
 	}),
 }));
 

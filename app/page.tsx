@@ -1,21 +1,17 @@
 import { TattooMap } from "@/components/map/tattoo-map";
-import { type PortfolioCategory, portfolioItems } from "@/lib/portfolio";
+import { getPortfolioGallery } from "@/lib/portfolio";
 import { getTattooServices } from "@/lib/services";
 import { getAvailableDatesAction } from "./actions/availability";
 import { AvailabilityBooking } from "./availability-booking";
 import { PortfolioImage } from "./portfolio-image";
 
-const portfolioCategories: PortfolioCategory[] = [
-	"Realistic Color Tattoos",
-	"Realistic Black & Gray Tattoos",
-	"Fine line Tattoos",
-];
-
 export default async function Home() {
-	const [initialAvailableDates, tattooServices] = await Promise.all([
-		getAvailableDatesAction(),
-		getTattooServices({ onlyActive: true }),
-	]);
+	const [initialAvailableDates, tattooServices, portfolioGroups] =
+		await Promise.all([
+			getAvailableDatesAction(),
+			getTattooServices({ onlyActive: true }),
+			getPortfolioGallery(),
+		]);
 	return (
 		<div className="site-shell">
 			<header className="site-header">
@@ -53,49 +49,44 @@ export default async function Home() {
 						<p className="eyebrow">Selected work</p>
 						<h2 id="gallery-title">Portfolio</h2>
 					</div>
-					{portfolioItems.some((item) => item.isPublished) ? (
-						portfolioCategories.map((category, categoryIndex) => {
-							const items = portfolioItems
-								.filter(
-									(item) => item.isPublished && item.category === category,
-								)
-								.sort((first, second) => first.sortOrder - second.sortOrder);
-							if (!items.length) return null;
-							const [featuredItem, ...remainingItems] = items;
+					{portfolioGroups.length ? (
+						portfolioGroups.map((group, groupIndex) => {
+							const [featuredItem, ...remainingItems] = group.items;
+							const groupKey = group.id ?? "other";
 							return (
 								<section
 									className="portfolio-category"
-									key={category}
-									aria-labelledby={`${featuredItem.id}-category`}
+									key={groupKey}
+									aria-labelledby={`category-${groupKey}-portfolio`}
 								>
 									<p
 										className="portfolio-category-label"
-										id={`${featuredItem.id}-category`}
+										id={`category-${groupKey}-portfolio`}
 									>
-										{category}
+										{group.name}
 									</p>
-									{categoryIndex === 0 && (
+									{groupIndex === 0 && (
 										<div className="portfolio-feature">
 											<figure>
 												<PortfolioImage
-													alt={featuredItem.altText}
+													alt={`${featuredItem.title} tattoo by ${featuredItem.artistName}`}
 													priority
 													src={featuredItem.imageUrl}
 												/>
 												<figcaption>{featuredItem.title}</figcaption>
 											</figure>
 											<div className="portfolio-feature-copy">
-												<p>{featuredItem.description}</p>
+												{featuredItem.details && <p>{featuredItem.details}</p>}
 												<p className="eyebrow">Featured work</p>
 											</div>
 										</div>
 									)}
 									<div className="portfolio-row">
-										{(categoryIndex === 0 ? remainingItems : items).map(
+										{(groupIndex === 0 ? remainingItems : group.items).map(
 											(item) => (
 												<figure key={item.id}>
 													<PortfolioImage
-														alt={item.altText}
+														alt={`${item.title} tattoo by ${item.artistName}`}
 														src={item.imageUrl}
 													/>
 													<figcaption>{item.title}</figcaption>

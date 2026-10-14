@@ -3,7 +3,11 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/app/db";
-import { portfolios, tattooArtists } from "@/app/db/tattoo-schema";
+import {
+	portfolioCategories,
+	portfolios,
+	tattooArtists,
+} from "@/app/db/tattoo-schema";
 import { requireAdminSession } from "@/lib/admin-auth";
 import { deletePortfolioImage, uploadPortfolioImage } from "@/lib/cloudinary";
 import type { MutationResult } from "../services/actions";
@@ -127,10 +131,17 @@ export async function addPortfolioImage(
 	const artistId = Number(formData.get("artistId"));
 	const title = String(formData.get("title") ?? "");
 	const details = String(formData.get("details") ?? "");
+	const categoryValue = String(formData.get("categoryId") ?? "");
+	const categoryId = categoryValue ? Number(categoryValue) : null;
 	const file = formData.get("file");
 
 	if (!Number.isSafeInteger(artistId) || artistId < 1)
 		return { ok: false, error: "Choose a valid artist." };
+	if (
+		categoryId !== null &&
+		(!Number.isSafeInteger(categoryId) || categoryId < 1)
+	)
+		return { ok: false, error: "Choose a valid category." };
 	if (!title.trim() || title.trim().length > 150)
 		return { ok: false, error: "Title is required (maximum 150 characters)." };
 	if (details.length > 5000)
@@ -158,6 +169,7 @@ export async function addPortfolioImage(
 
 		await db.insert(portfolios).values({
 			artistId,
+			categoryId,
 			title: title.trim(),
 			details: details.trim() || null,
 			imageUrl: uploaded.url,
@@ -165,6 +177,80 @@ export async function addPortfolioImage(
 		});
 	} catch {
 		return { ok: false, error: "Unable to upload this image. Try again." };
+	}
+
+	revalidateArtists();
+	return { ok: true };
+}
+
+export async function createPortfolioCategory(
+	name: string,
+): Promise<MutationResult> {
+	await requireAdminSession();
+	const trimmed = typeof name === "string" ? name.trim() : "";
+	if (!trimmed || trimmed.length > 80)
+		return { ok: false, error: "Name is required (maximum 80 characters)." };
+
+	try {
+		const inserted = await db
+			.insert(portfolioCategories)
+			.values({ name: trimmed })
+			.onConflictDoNothing()
+			.returning({ id: portfolioCategories.id });
+		if (!inserted.length)
+			return { ok: false, error: "That category already exists." };
+	} catch {
+		return { ok: false, error: "Unable to save this category. Try again." };
+	}
+
+	revalidateArtists();
+	return { ok: true };
+}
+
+export async function deletePortfolioCategory(
+	id: number,
+): Promise<MutationResult> {
+	await requireAdminSession();
+	if (!Number.isSafeInteger(id) || id < 1)
+		return { ok: false, error: "Choose a valid category." };
+
+	try {
+		const deleted = await db
+			.delete(portfolioCategories)
+			.where(eq(portfolioCategories.id, id))
+			.returning({ id: portfolioCategories.id });
+		if (!deleted.length) return { ok: false, error: "Category not found." };
+	} catch {
+		return { ok: false, error: "Unable to delete this category. Try again." };
+	}
+
+	revalidateArtists();
+	return { ok: true };
+}
+
+export async function setPortfolioItemCategory(
+	id: number,
+	categoryId: number | null,
+): Promise<MutationResult> {
+	await requireAdminSession();
+	if (!Number.isSafeInteger(id) || id < 1)
+		return { ok: false, error: "Choose a valid portfolio image." };
+	if (
+		categoryId !== null &&
+		(!Number.isSafeInteger(categoryId) || categoryId < 1)
+	)
+		return { ok: false, error: "Choose a valid category." };
+
+	try {
+		const updated = await db
+			.update(portfolios)
+			.set({ categoryId })
+			.where(eq(portfolios.id, id))
+			.returning({ id: portfolios.id });
+		if (!updated.length)
+			return { ok: false, error: "Portfolio image not found." };
+	} catch {
+		return { ok: false, error: "Unable to update this image. Try again." };
 	}
 
 	revalidateArtists();
