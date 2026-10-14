@@ -2,9 +2,10 @@
 
 import { and, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { db } from "@/app/db";
-import { appointments, tattooServices } from "@/app/db/tattoo-schema";
+import { db } from "@/db";
+import { appointments, tattooServices } from "@/db/tattoo-schema";
 import { requireAdminSession } from "@/lib/admin-auth";
+import type { MutationResult } from "@/types/actions";
 
 export type ServiceInput = {
 	id?: string;
@@ -16,8 +17,6 @@ export type ServiceInput = {
 	sortOrder: number;
 	isActive: boolean;
 };
-
-export type MutationResult = { ok: true } | { ok: false; error: string };
 
 function validateService(input: ServiceInput): string | null {
 	if (!input || typeof input !== "object")

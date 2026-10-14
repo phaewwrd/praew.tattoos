@@ -3,7 +3,7 @@ import {
 	getAdminScheduleMonth,
 	getAllArtists,
 	studioTodayKey,
-} from "@/lib/admin-schedule";
+} from "@/services/admin-schedule";
 import { ScheduleManager } from "./schedule-manager";
 
 export default async function AdminSchedulePage() {

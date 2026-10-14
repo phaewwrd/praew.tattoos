@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
-import { QueryProvider } from "./query-provider";
+import { QueryProvider } from "@/components/providers/QueryProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,6 +18,11 @@ export const metadata: Metadata = {
 	title: "Praew Tattoos | Fine line tattooing in Bangkok",
 	description:
 		"Fine line and ornamental tattooing by Praew in Bangkok, Thailand.",
+};
+
+export const viewport: Viewport = {
+	width: "device-width",
+	initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

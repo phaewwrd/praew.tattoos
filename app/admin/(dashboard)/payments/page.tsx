@@ -1,4 +1,4 @@
-import { FeaturePlaceholder } from "@/components/admin/feature-placeholder";
+import { FeaturePlaceholder } from "@/components/features/admin/FeaturePlaceholder";
 
 export default function AdminPaymentsPage() {
 	return (

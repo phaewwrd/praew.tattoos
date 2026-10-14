@@ -2,15 +2,15 @@
 
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { db } from "@/app/db";
+import { db } from "@/db";
 import {
 	portfolioCategories,
 	portfolios,
 	tattooArtists,
-} from "@/app/db/tattoo-schema";
+} from "@/db/tattoo-schema";
 import { requireAdminSession } from "@/lib/admin-auth";
 import { deletePortfolioImage, uploadPortfolioImage } from "@/lib/cloudinary";
-import type { MutationResult } from "../services/actions";
+import type { MutationResult } from "@/types/actions";
 
 export type ArtistInput = {
 	id?: number;

@@ -2,14 +2,15 @@
 
 import { and, eq, gt, lt, ne } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { db } from "@/app/db";
+import { db } from "@/db";
 import {
 	appointments,
 	scheduleDateBlocks,
 	slots,
 	tattooArtists,
-} from "@/app/db/tattoo-schema";
+} from "@/db/tattoo-schema";
 import { requireAdminSession } from "@/lib/admin-auth";
+import type { ActionResult } from "@/types/actions";
 
 type SlotInput = {
 	artistId: number;
@@ -17,7 +18,6 @@ type SlotInput = {
 	startTime: string;
 	endTime: string;
 };
-type ActionResult = { ok: true } | { ok: false; error: string };
 
 function validArtistId(value: unknown): value is number {
 	return typeof value === "number" && Number.isSafeInteger(value) && value > 0;
@@ -134,7 +134,7 @@ export async function getScheduleMonthAction(month: string, artistId: number) {
 	await requireAdminSession();
 	if (typeof month !== "string" || !validArtistId(artistId))
 		return { slots: [], blockedDates: [] };
-	const { getAdminScheduleMonth } = await import("@/lib/admin-schedule");
+	const { getAdminScheduleMonth } = await import("@/services/admin-schedule");
 	return getAdminScheduleMonth(month);
 }
 
@@ -146,7 +146,6 @@ export async function createScheduleSlot(
 	if (invalid) return invalid;
 
 	const artistId = input.artistId;
-	console.log(input);
 	try {
 		const result = await db.transaction(async (tx) => {
 			if (!(await lockArtist(tx, artistId)))

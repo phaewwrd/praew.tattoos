@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { logoutAdminAction } from "@/app/admin/actions";
-import { AdminNav } from "@/components/admin/admin-nav";
+import { AdminSidebar } from "@/components/layouts/AdminSidebar";
 import { requireAdminSession } from "@/lib/admin-auth";
 
 export default async function AdminDashboardLayout({
@@ -11,15 +11,10 @@ export default async function AdminDashboardLayout({
 	const session = await requireAdminSession();
 
 	return (
-		<div className="min-h-screen bg-neutral-100 font-sans text-neutral-900">
-			<div className="mx-auto grid min-h-screen w-full max-w-7xl grid-cols-1 gap-4 p-4 lg:grid-cols-[260px_1fr] lg:gap-6 lg:p-6">
-				<aside className="rounded-xl border border-neutral-200 bg-white p-4 lg:p-5">
-					<p className="mb-4 text-xs font-semibold uppercase tracking-wide text-neutral-500">
-						Praew Tattoos Admin
-					</p>
-					<AdminNav />
-				</aside>
-				<div className="flex min-h-[70vh] flex-col rounded-xl border border-neutral-200 bg-white">
+		<div className="admin-shell min-h-dvh bg-neutral-100 font-sans text-neutral-900">
+			<div className="mx-auto grid min-h-dvh w-full max-w-7xl grid-cols-1 gap-4 p-4 lg:grid-cols-[260px_1fr] lg:gap-6 lg:p-6">
+				<AdminSidebar />
+				<div className="flex min-h-[70dvh] flex-col rounded-xl border border-neutral-200 bg-white">
 					<header className="flex flex-col gap-3 border-b border-neutral-200 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
 						<div>
 							<p className="text-xs uppercase tracking-wide text-neutral-500">

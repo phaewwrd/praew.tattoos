@@ -1,0 +1,23 @@
+{
+	"css": { "parser": { "tailwindDirectives": true } },
+	"linter": {
+		"rules": {
+			"a11y": {
+				"noLabelWithoutControl": {
+					"level": "error",
+					"options": { "inputComponents": ["Input", "Select", "Textarea"] }
+				}
+			}
+		}
+	},
+	"files": {
+		"includes": [
+			"**",
+			"!**/node_modules",
+			"!**/.next",
+			"!**/drizzle/meta",
+			"!**/*.tsbuildinfo",
+			"!**/next-env.d.ts"
+		]
+	}
+}

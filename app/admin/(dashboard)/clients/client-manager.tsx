@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { type FormEvent, useState } from "react";
-import type { ClientListItem } from "@/lib/clients";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { TableScroll } from "@/components/ui/TableScroll";
+import type { ClientListItem } from "@/services/clients";
 import { saveClient, setClientArchived } from "./actions";
 
 function formatDate(value: string | null) {
@@ -64,42 +67,39 @@ export function ClientManager({
 				</h2>
 				<label className="text-sm text-neutral-700">
 					Full name
-					<input
+					<Input
 						required
 						maxLength={100}
 						value={fullName}
 						onChange={(event) => setFullName(event.target.value)}
-						className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
+						className="mt-1"
 					/>
 				</label>
 				<label className="text-sm text-neutral-700">
 					Email
-					<input
+					<Input
 						required
 						type="email"
 						maxLength={255}
 						value={email}
 						onChange={(event) => setEmail(event.target.value)}
-						className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
+						className="mt-1"
 					/>
 				</label>
 				<label className="text-sm text-neutral-700">
 					Phone
-					<input
+					<Input
 						required
 						maxLength={20}
 						value={phone}
 						onChange={(event) => setPhone(event.target.value)}
-						className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
+						className="mt-1"
 					/>
 				</label>
 				<div className="flex items-end gap-3">
-					<button
-						disabled={busy}
-						className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
-					>
+					<Button type="submit" disabled={busy}>
 						Add client
-					</button>
+					</Button>
 					{message && (
 						<p role="status" className="pb-2 text-xs text-neutral-600">
 							{message}
@@ -114,7 +114,7 @@ export function ClientManager({
 						No clients{includeArchived ? " found" : " yet"}.
 					</p>
 				) : (
-					<div className="overflow-x-auto">
+					<TableScroll label="Clients">
 						<table className="min-w-full text-left text-sm">
 							<thead className="bg-neutral-50 text-xs uppercase tracking-wide text-neutral-500">
 								<tr>
@@ -152,19 +152,20 @@ export function ClientManager({
 											{client.isArchived ? "Archived" : "Active"}
 										</td>
 										<td className="px-4 py-3">
-											<button
+											<Button
+												variant="link"
 												disabled={busy}
 												onClick={() => void archive(client)}
-												className="text-sm font-medium text-neutral-700 underline"
+												className="text-sm"
 											>
 												{client.isArchived ? "Restore" : "Archive"}
-											</button>
+											</Button>
 										</td>
 									</tr>
 								))}
 							</tbody>
 						</table>
-					</div>
+					</TableScroll>
 				)}
 			</section>
 		</>

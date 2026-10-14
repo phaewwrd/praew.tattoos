@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
-import { StatusBadge } from "@/components/admin/status-badge";
-import { getClientDetail } from "@/lib/clients";
-import { ClientEditor } from "../client-editor";
+import { ClientEditor } from "@/app/admin/(dashboard)/clients/client-editor";
+import { StatusBadge } from "@/components/features/admin/StatusBadge";
+import { TableScroll } from "@/components/ui/TableScroll";
+import { getClientDetail } from "@/services/clients";
 
 function formatDate(value: string) {
 	if (!value) return "-";
@@ -89,7 +90,7 @@ export default async function AdminClientDetailPage({
 						This client has no bookings yet.
 					</p>
 				) : (
-					<div className="overflow-x-auto">
+					<TableScroll label="Booking history">
 						<table className="min-w-full text-left text-sm">
 							<thead className="bg-neutral-50 text-xs uppercase tracking-wide text-neutral-500">
 								<tr>
@@ -130,7 +131,7 @@ export default async function AdminClientDetailPage({
 								))}
 							</tbody>
 						</table>
-					</div>
+					</TableScroll>
 				)}
 			</section>
 		</div>

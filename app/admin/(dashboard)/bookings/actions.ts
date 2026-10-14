@@ -2,11 +2,11 @@
 
 import { and, eq, ne } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { db } from "@/app/db";
-import { appointments, slots } from "@/app/db/tattoo-schema";
+import { db } from "@/db";
+import { appointments, slots } from "@/db/tattoo-schema";
 import { requireAdminSession } from "@/lib/admin-auth";
-import type { BookingStatus } from "@/lib/bookings";
-import type { MutationResult } from "../services/actions";
+import type { BookingStatus } from "@/services/bookings";
+import type { MutationResult } from "@/types/actions";
 
 const statuses: BookingStatus[] = [
 	"PENDING_PAYMENT",

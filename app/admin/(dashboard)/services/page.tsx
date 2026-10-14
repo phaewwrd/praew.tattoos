@@ -1,5 +1,5 @@
 import { connection } from "next/server";
-import { getTattooServices } from "@/lib/services";
+import { getTattooServices } from "@/services/services";
 import { ServiceManager } from "./service-manager";
 
 export default async function AdminServicesPage() {

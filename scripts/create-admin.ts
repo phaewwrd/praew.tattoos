@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { eq } from "drizzle-orm";
-import { db } from "@/app/db";
-import { user } from "@/app/db/auth-schema";
+import { db } from "@/db";
+import { user } from "@/db/auth-schema";
 import { auth } from "@/lib/auth";
 
 async function createAdmin() {

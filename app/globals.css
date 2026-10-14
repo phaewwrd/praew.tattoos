@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* Single source of truth for breakpoints (mirrored in constants/ui.ts). */
+@theme {
+	--breakpoint-sm: 40rem;
+	--breakpoint-md: 48rem;
+	--breakpoint-lg: 64rem;
+	--breakpoint-xl: 80rem;
+	--breakpoint-2xl: 96rem;
+}
+
 :root {
 	--paper: #f5f3ed;
 	--ink: #1c1b19;
@@ -28,7 +37,7 @@ a:focus-visible {
 .site-header,
 .section-frame,
 .site-footer {
-	width: min(100% - 48px, 1280px);
+	width: min(100% - 3rem, 80rem);
 	margin-inline: auto;
 }
 .site-header {
@@ -55,6 +64,10 @@ a:focus-visible {
 }
 .site-nav a {
 	text-decoration: none;
+}
+.menu-toggle,
+.mobile-nav {
+	display: none;
 }
 .site-nav a:hover,
 .text-link:hover,
@@ -510,21 +523,82 @@ h2 {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 11px;
 }
-@media (max-width: 680px) {
+@media (max-width: 63.99rem), (pointer: coarse) {
+	.admin-shell
+		:is(
+			button,
+			select,
+			input:not([type="checkbox"], [type="radio"], [type="file"])
+		) {
+		min-height: 44px;
+	}
+}
+/* Media queries cannot read @theme vars; values mirror --breakpoint-lg and -md. */
+@media (max-width: 63.99rem) {
+	.service-item {
+		grid-template-columns: 1fr 1fr;
+		gap: 24px 40px;
+	}
+	.service-item .text-link {
+		grid-column: 1 / -1;
+		justify-self: start;
+	}
+	.portfolio-feature .portfolio-image {
+		min-height: 520px;
+	}
+	.booking-calendar {
+		padding-right: 24px;
+	}
+	.appointment-form {
+		padding-left: 28px;
+	}
+}
+@media (max-width: 47.99rem) {
 	.site-header,
 	.section-frame,
 	.site-footer {
-		width: min(100% - 32px, 1280px);
+		width: min(100% - 2rem, 80rem);
 	}
 	.site-header {
-		align-items: flex-start;
-		flex-direction: column;
-		gap: 14px;
-		padding: 22px 0;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 0 14px;
+		min-height: 64px;
+		padding: 8px 0;
 	}
 	.site-nav {
-		justify-content: flex-start;
-		gap: 10px 18px;
+		display: none;
+	}
+	.menu-toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 44px;
+		min-height: 44px;
+		padding: 0 12px;
+		border: 1px solid var(--line);
+		background: transparent;
+		color: inherit;
+		font: inherit;
+		text-transform: lowercase;
+		cursor: pointer;
+	}
+	.menu-toggle:focus-visible,
+	.mobile-nav a:focus-visible {
+		outline: 2px solid var(--ink);
+		outline-offset: 2px;
+	}
+	.mobile-nav:not([hidden]) {
+		display: flex;
+		flex-basis: 100%;
+		flex-direction: column;
+		padding-bottom: 12px;
+	}
+	.mobile-nav a {
+		display: flex;
+		align-items: center;
+		min-height: 44px;
+		text-decoration: none;
 	}
 	.hero {
 		padding: 110px 0 128px;
@@ -593,5 +667,20 @@ h2 {
 	.site-footer {
 		align-items: flex-start;
 		flex-direction: column;
+	}
+	.calendar-button {
+		width: 44px;
+		height: 44px;
+	}
+	.calendar-days button,
+	.calendar-days span {
+		min-height: 44px;
+	}
+	.time-list button,
+	.appointment-form input,
+	.appointment-form select,
+	.text-button,
+	.confirm-button {
+		min-height: 44px;
 	}
 }
