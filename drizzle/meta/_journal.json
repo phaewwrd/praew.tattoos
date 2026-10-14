@@ -1,13 +1,48 @@
 {
-  "version": "7",
-  "dialect": "postgresql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1790249636826,
-      "tag": "0000_greedy_genesis",
-      "breakpoints": true
-    }
-  ]
+	"version": "7",
+	"dialect": "postgresql",
+	"entries": [
+		{
+			"idx": 0,
+			"version": "7",
+			"when": 1790408042077,
+			"tag": "0000_square_doorman",
+			"breakpoints": true
+		},
+		{
+			"idx": 1,
+			"version": "7",
+			"when": 1790582723002,
+			"tag": "0001_auth_role_default_user",
+			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "7",
+			"when": 1790590649736,
+			"tag": "0002_schedule_date_blocks",
+			"breakpoints": true
+		},
+		{
+			"idx": 3,
+			"version": "7",
+			"when": 1790592899454,
+			"tag": "0003_admin_management",
+			"breakpoints": true
+		},
+		{
+			"idx": 4,
+			"version": "7",
+			"when": 1790592958058,
+			"tag": "0004_service_decimal_amounts",
+			"breakpoints": true
+		},
+		{
+			"idx": 5,
+			"version": "7",
+			"when": 1790594843639,
+			"tag": "0005_artist_portfolio_public_id",
+			"breakpoints": true
+		}
+	]
 }

@@ -140,13 +140,13 @@ Admin Management
 | --- | ------------------- | ------ |
 | F01 | Public Website      | DONE   |
 | F02 | Portfolio           | DONE   |
-| F03 | Tattoo Services     | TODO   |
-| F04 | Booking             | TODO   |
+| F03 | Tattoo Services     | DONE   |
+| F04 | Booking             | DONE   |
 | F05 | Payment             | TODO   |
 | F06 | Email Notification  | TODO   |
 | F07 | Admin Dashboard     | TODO   |
 | F08 | Client Management   | TODO   |
-| F09 | Schedule Management | TODO   |
+| F09 | Schedule Management | DONE   |
 | F10 | Contact Message     | TODO   |
 
 Status values:

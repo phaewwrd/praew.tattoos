@@ -1,4 +1,5 @@
 import {
+  boolean,
   date,
   decimal,
   integer,
@@ -26,7 +27,7 @@ export const slotStatusEnum = pgEnum("slot_status", [
 export const appointmentStatusEnum = pgEnum(
   "appointment_status",
   [
-    "PENDING",
+    "PENDING_PAYMENT",
     "CONFIRMED",
     "COMPLETED",
     "CANCELLED",
@@ -106,7 +107,58 @@ export const portfolios = pgTable(
       length: 500,
     }).notNull(),
 
+    imagePublicId: varchar("image_public_id", {
+      length: 255,
+    }),
+
     details: text("details"),
+
+    createdAt: timestamp("created_at")
+      .defaultNow()
+      .notNull(),
+
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+);
+
+
+// ========================================
+// TATTOO SERVICES
+// ========================================
+
+export const tattooServices = pgTable(
+  "tattoo_services",
+  {
+    id: varchar("id", {
+      length: 100,
+    }).primaryKey(),
+
+    name: varchar("name", {
+      length: 150,
+    }).notNull(),
+
+    slug: varchar("slug", {
+      length: 160,
+    }).notNull().unique(),
+
+    description: text("description").notNull(),
+
+    priceFrom: decimal("price_from", { precision: 10, scale: 2 }).notNull(),
+
+    depositAmount: decimal("deposit_amount", { precision: 10, scale: 2 }).notNull(),
+
+    durationMinutes: integer("duration_minutes").default(60).notNull(),
+
+    isActive: boolean("is_active")
+      .default(true)
+      .notNull(),
+
+    sortOrder: integer("sort_order")
+      .default(0)
+      .notNull(),
 
     createdAt: timestamp("created_at")
       .defaultNow()
@@ -167,6 +219,26 @@ export const slots = pgTable(
   ],
 );
 
+export const scheduleDateBlocks = pgTable(
+  "schedule_date_blocks",
+  {
+    artistId: integer("artist_id")
+      .notNull()
+      .references(() => tattooArtists.id, {
+        onDelete: "cascade",
+      }),
+
+    date: date("date").notNull(),
+
+    createdAt: timestamp("created_at")
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    unique("schedule_date_blocks_artist_date_unique").on(table.artistId, table.date),
+  ],
+);
+
 
 // ========================================
 // CLIENTS
@@ -190,6 +262,10 @@ export const clients = pgTable(
     email: varchar("email", {
       length: 255,
     }),
+
+    isArchived: boolean("is_archived")
+      .default(false)
+      .notNull(),
 
     createdAt: timestamp("created_at")
       .defaultNow()
@@ -222,7 +298,6 @@ export const appointments = pgTable(
 
     slotId: integer("slot_id")
       .notNull()
-      .unique()
       .references(() => slots.id, {
         onDelete: "restrict",
       }),
@@ -230,10 +305,16 @@ export const appointments = pgTable(
     status: appointmentStatusEnum(
       "status",
     )
-      .default("PENDING")
+      .default("PENDING_PAYMENT")
       .notNull(),
 
     details: text("details"),
+
+    agreedPrice: decimal("agreed_price", { precision: 10, scale: 2 }).notNull(),
+
+    depositAmount: decimal("deposit_amount", { precision: 10, scale: 2 }).notNull(),
+
+    notes: text("notes"),
 
     placement: varchar("placement", {
       length: 100,
@@ -348,6 +429,7 @@ export const tattooArtistsRelations =
     ({ many }) => ({
       portfolios: many(portfolios),
       slots: many(slots),
+      scheduleDateBlocks: many(scheduleDateBlocks),
     }),
   );
 
@@ -428,6 +510,12 @@ export type Portfolio =
 
 export type NewPortfolio =
   typeof portfolios.$inferInsert;
+
+export type TattooService =
+  typeof tattooServices.$inferSelect;
+
+export type NewTattooService =
+  typeof tattooServices.$inferInsert;
 
 export type Slot =
   typeof slots.$inferSelect;

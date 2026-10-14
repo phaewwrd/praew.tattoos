@@ -3,6 +3,9 @@
 ## Goal
 Allow the admin to control which appointment dates and time slots are available for customers to book.
 
+## Implementation Status
+DONE. The admin schedule is available at `/admin/schedule`. Existing `slots` are reused; `schedule_date_blocks` stores full-day closures that cannot be represented by a slot row.
+
 ## Core Principle
 The server is the source of truth for availability.
 
@@ -77,11 +80,9 @@ Public availability updates
 - Timezone must be consistent with the studio's operating timezone.
 
 ## Pending Payment
-Choose and document one policy before implementation:
-1. Slot remains temporarily reserved until payment timeout.
-2. Slot remains available until payment succeeds.
+Pending appointments reserve their slot immediately and remain reserved until the appointment record is removed. Cancelled appointment records also continue to occupy their slot; cancellation does not automatically release availability. This matches the current booking repository, which treats any appointment attached to a slot as occupied. No payment timeout is implemented.
 
-The implementation must use one explicit rule rather than mixing behaviors.
+Schedule dates and times use the studio timezone, `Asia/Bangkok`. Admin slot changes reject past dates and overlapping time ranges. Full-day blocks hide all slots from public availability and are checked again during reservation.
 
 ## Testing Checklist
 - [ ] Admin can create a slot

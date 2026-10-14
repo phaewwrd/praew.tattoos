@@ -1,5 +1,5 @@
-// @ts-expect-error — better-auth is provided by the project runtime but lacks local type declarations.
 import { betterAuth } from "better-auth";
+import { nextCookies } from "better-auth/next-js";
 
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 
@@ -19,14 +19,16 @@ export const auth = betterAuth({
 			role: {
 				type: "string",
 				required: true,
-				defaultValue: "admin",
+				defaultValue: "user",
+				input: false,
 			},
 			disabled: {
 				type: "boolean",
 				required: true,
 				defaultValue: false,
+				input: false,
 			},
 		},
 	},
-	plugins: [],
+	plugins: [nextCookies()],
 });

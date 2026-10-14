@@ -125,6 +125,21 @@ CREATE TABLE "tattoo_artists" (
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "tattoo_services" (
+	"id" varchar(100) PRIMARY KEY NOT NULL,
+	"name" varchar(150) NOT NULL,
+	"slug" varchar(160) NOT NULL,
+	"description" text NOT NULL,
+	"price_from" integer NOT NULL,
+	"deposit_amount" integer NOT NULL,
+	"duration_minutes" integer,
+	"is_active" boolean DEFAULT true NOT NULL,
+	"sort_order" integer DEFAULT 0 NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "tattoo_services_slug_unique" UNIQUE("slug")
+);
+--> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "session" ADD CONSTRAINT "session_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "appointments" ADD CONSTRAINT "appointments_client_id_clients_id_fk" FOREIGN KEY ("client_id") REFERENCES "public"."clients"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint

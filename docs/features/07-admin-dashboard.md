@@ -25,9 +25,11 @@ Do not create a separate backend server unless a future requirement clearly just
 
 ## Authentication
 - Admin authentication is required.
-- Use Better Auth or the project's chosen auth system.
+- Use Better Auth email/password authentication and sessions.
 - Admin authorization must be enforced server-side.
 - Never rely only on hidden UI links for access control.
+
+Create the initial administrator using `ADMIN_NAME`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` environment variables, then run `pnpm admin:create`. New accounts default to the non-admin `user` role; the role cannot be supplied during signup.
 
 ## Dashboard Overview
 Show useful operational information such as:

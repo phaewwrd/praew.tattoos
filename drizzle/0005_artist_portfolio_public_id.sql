@@ -1,0 +1,1 @@
+ALTER TABLE "portfolios" ADD COLUMN "image_public_id" varchar(255);
