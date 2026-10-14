@@ -8,7 +8,7 @@ export default async function AdminLoginPage() {
 	}
 
 	return (
-		<main className="flex min-h-screen items-center justify-center bg-neutral-100 px-4 py-12 text-neutral-900">
+		<main className="admin-shell flex min-h-dvh items-center justify-center bg-neutral-100 px-4 py-12 text-neutral-900">
 			<section className="w-full max-w-sm rounded-xl border border-neutral-200 bg-white p-6 shadow-sm sm:p-8">
 				<p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
 					Praew Tattoos

@@ -1,5 +1,5 @@
 import { connection } from "next/server";
-import { getArtists } from "@/lib/artists";
+import { getArtists } from "@/services/artists";
 import { ArtistManager } from "./artist-manager";
 
 export default async function AdminArtistsPage() {

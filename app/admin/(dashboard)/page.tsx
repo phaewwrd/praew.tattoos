@@ -1,5 +1,6 @@
-import { StatusBadge } from "@/components/admin/status-badge";
-import { getAdminDashboardData } from "@/lib/admin-dashboard";
+import { StatusBadge } from "@/components/features/admin/StatusBadge";
+import { TableScroll } from "@/components/ui/TableScroll";
+import { getAdminDashboardData } from "@/services/admin-dashboard";
 
 function formatDate(value: string) {
 	if (!value) return "-";
@@ -83,7 +84,7 @@ export default async function AdminDashboardPage() {
 							No appointments scheduled for today.
 						</p>
 					) : (
-						<div className="overflow-x-auto">
+						<TableScroll label="Today's appointments">
 							<table className="min-w-full text-left text-sm">
 								<thead className="bg-neutral-50 text-xs uppercase tracking-wide text-neutral-500">
 									<tr>
@@ -104,7 +105,7 @@ export default async function AdminDashboardPage() {
 									))}
 								</tbody>
 							</table>
-						</div>
+						</TableScroll>
 					)}
 				</article>
 
@@ -119,7 +120,7 @@ export default async function AdminDashboardPage() {
 							No upcoming appointments in the next two weeks.
 						</p>
 					) : (
-						<div className="overflow-x-auto">
+						<TableScroll label="Upcoming appointments">
 							<table className="min-w-full text-left text-sm">
 								<thead className="bg-neutral-50 text-xs uppercase tracking-wide text-neutral-500">
 									<tr>
@@ -140,7 +141,7 @@ export default async function AdminDashboardPage() {
 									))}
 								</tbody>
 							</table>
-						</div>
+						</TableScroll>
 					)}
 				</article>
 			</section>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { connection } from "next/server";
-import { getClients } from "@/lib/clients";
+import { getClients } from "@/services/clients";
 import { ClientManager } from "./client-manager";
 
 export default async function AdminClientsPage({

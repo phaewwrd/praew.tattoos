@@ -2,10 +2,10 @@
 
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { db } from "@/app/db";
-import { clients } from "@/app/db/tattoo-schema";
+import { db } from "@/db";
+import { clients } from "@/db/tattoo-schema";
 import { requireAdminSession } from "@/lib/admin-auth";
-import type { MutationResult } from "../services/actions";
+import type { MutationResult } from "@/types/actions";
 
 type ClientInput = {
 	id?: number;

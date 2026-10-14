@@ -1,13 +1,13 @@
 "use server";
 
-import { availabilityService } from "@/lib/availability-service";
+import { failure, type ServerResponse, success } from "@/lib/server-response";
+import { availabilityService } from "@/services/availability-service";
 import type {
 	AppointmentRequest,
 	AppointmentReservation,
 	AvailableDates,
 	AvailableTimes,
-} from "@/lib/availability-types";
-import { failure, type ServerResponse, success } from "@/lib/server-response";
+} from "@/types/availability";
 
 export async function getAvailableDatesAction(): Promise<
 	ServerResponse<AvailableDates>

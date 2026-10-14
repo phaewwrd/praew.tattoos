@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { and, eq } from "drizzle-orm";
-import { db } from "@/app/db";
-import { slots, tattooArtists, tattooServices } from "@/app/db/tattoo-schema";
+import { db } from "@/db";
+import { slots, tattooArtists, tattooServices } from "@/db/tattoo-schema";
 
 const serviceSeeds = [
 	{

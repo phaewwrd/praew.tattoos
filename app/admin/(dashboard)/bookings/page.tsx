@@ -1,5 +1,5 @@
 import { connection } from "next/server";
-import { getBookings } from "@/lib/bookings";
+import { getBookings } from "@/services/bookings";
 import { BookingManager } from "./booking-manager";
 
 export default async function AdminBookingsPage() {

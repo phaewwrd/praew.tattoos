@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { StatusBadge } from "@/components/admin/status-badge";
-import type { BookingStatus } from "@/lib/bookings";
-import { updateBooking } from "./actions";
+import { StatusBadge } from "@/components/features/admin/StatusBadge";
+import { Button } from "@/components/ui/Button";
+import { Select } from "@/components/ui/Select";
+import { TableScroll } from "@/components/ui/TableScroll";
+import { Textarea } from "@/components/ui/Textarea";
+import { useBookingEditor } from "@/hooks/useBookingEditor";
+import type { Booking, BookingStatus } from "@/services/bookings";
+import { formatDateLabel, formatThb } from "@/utils/format";
 
-type Booking = Awaited<
-	ReturnType<typeof import("@/lib/bookings").getBookings>
->[number];
 const statusOptions: BookingStatus[] = [
 	"PENDING_PAYMENT",
 	"CONFIRMED",
@@ -16,42 +17,8 @@ const statusOptions: BookingStatus[] = [
 	"NO_SHOW",
 ];
 
-function formatDate(value: string) {
-	const date = new Date(`${value}T12:00:00`);
-	return Number.isNaN(date.getTime())
-		? value
-		: new Intl.DateTimeFormat("en-US", {
-				year: "numeric",
-				month: "short",
-				day: "numeric",
-			}).format(date);
-}
-
-function money(value: string) {
-	return new Intl.NumberFormat("en-US", {
-		style: "currency",
-		currency: "THB",
-		maximumFractionDigits: 2,
-	}).format(Number(value));
-}
-
 export function BookingManager({ bookings }: { bookings: Booking[] }) {
-	const [drafts, setDrafts] = useState<
-		Record<number, { status: BookingStatus; notes: string }>
-	>({});
-	const [message, setMessage] = useState("");
-	const [busyId, setBusyId] = useState<number | null>(null);
-
-	async function save(booking: Booking) {
-		const draft = drafts[booking.id] ?? {
-			status: booking.status,
-			notes: booking.notes ?? "",
-		};
-		setBusyId(booking.id);
-		const result = await updateBooking(booking.id, draft.status, draft.notes);
-		setMessage(result.ok ? `Booking #${booking.id} updated.` : result.error);
-		setBusyId(null);
-	}
+	const { busyId, getDraft, message, save, updateDraft } = useBookingEditor();
 
 	return (
 		<div className="space-y-6">
@@ -70,7 +37,7 @@ export function BookingManager({ bookings }: { bookings: Booking[] }) {
 				{bookings.length === 0 ? (
 					<p className="p-4 text-sm text-neutral-600">No bookings yet.</p>
 				) : (
-					<div className="overflow-x-auto">
+					<TableScroll label="Bookings">
 						<table className="min-w-full text-left text-sm">
 							<thead className="bg-neutral-50 text-xs uppercase tracking-wide text-neutral-500">
 								<tr>
@@ -85,10 +52,7 @@ export function BookingManager({ bookings }: { bookings: Booking[] }) {
 							</thead>
 							<tbody>
 								{bookings.map((booking) => {
-									const draft = drafts[booking.id] ?? {
-										status: booking.status,
-										notes: booking.notes ?? "",
-									};
+									const draft = getDraft(booking);
 									return (
 										<tr
 											key={booking.id}
@@ -96,7 +60,7 @@ export function BookingManager({ bookings }: { bookings: Booking[] }) {
 										>
 											<td className="whitespace-nowrap px-4 py-3">
 												<p className="font-medium text-neutral-900">
-													{formatDate(booking.date)}
+													{formatDateLabel(booking.date)}
 												</p>
 												<p className="mt-1 text-xs text-neutral-600">
 													{booking.startTime}–{booking.endTime} · #{booking.id}
@@ -113,15 +77,15 @@ export function BookingManager({ bookings }: { bookings: Booking[] }) {
 											</td>
 											<td className="px-4 py-3">{booking.service}</td>
 											<td className="whitespace-nowrap px-4 py-3">
-												{money(booking.agreedPrice)} /{" "}
-												{money(booking.depositAmount)}
+												{formatThb(booking.agreedPrice)} /{" "}
+												{formatThb(booking.depositAmount)}
 											</td>
 											<td className="whitespace-nowrap px-4 py-3">
 												{booking.paymentStatus ? (
 													<>
 														<StatusBadge status={booking.paymentStatus} />
 														<p className="mt-1 text-xs">
-															Paid {money(booking.paidAmount)}
+															Paid {formatThb(booking.paidAmount)}
 														</p>
 													</>
 												) : (
@@ -132,58 +96,49 @@ export function BookingManager({ bookings }: { bookings: Booking[] }) {
 												<div className="mb-2">
 													<StatusBadge status={booking.status} />
 												</div>
-												<select
+												<Select
 													value={draft.status}
 													onChange={(event) =>
-														setDrafts({
-															...drafts,
-															[booking.id]: {
-																...draft,
-																status: event.target.value as BookingStatus,
-															},
+														updateDraft(booking, {
+															status: event.target.value as BookingStatus,
 														})
 													}
-													className="w-full rounded-md border border-neutral-300 px-2 py-1.5 text-sm"
+													className="px-2 py-1.5 text-sm"
 												>
 													{statusOptions.map((status) => (
 														<option key={status} value={status}>
 															{status.replaceAll("_", " ")}
 														</option>
 													))}
-												</select>
-												<textarea
+												</Select>
+												<Textarea
 													aria-label={`Admin notes for booking ${booking.id}`}
 													rows={2}
 													maxLength={10000}
 													placeholder="Admin notes"
 													value={draft.notes}
 													onChange={(event) =>
-														setDrafts({
-															...drafts,
-															[booking.id]: {
-																...draft,
-																notes: event.target.value,
-															},
-														})
+														updateDraft(booking, { notes: event.target.value })
 													}
-													className="mt-2 w-full rounded-md border border-neutral-300 px-2 py-1.5 text-sm"
+													className="mt-2 px-2 py-1.5 text-sm"
 												/>
 											</td>
 											<td className="px-4 py-3">
-												<button
+												<Button
+													variant="secondary"
 													disabled={busyId === booking.id}
 													onClick={() => void save(booking)}
-													className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-100 disabled:opacity-50"
+													className="px-3 py-1.5 text-neutral-900"
 												>
 													{busyId === booking.id ? "Saving" : "Save"}
-												</button>
+												</Button>
 											</td>
 										</tr>
 									);
 								})}
 							</tbody>
 						</table>
-					</div>
+					</TableScroll>
 				)}
 			</section>
 		</div>

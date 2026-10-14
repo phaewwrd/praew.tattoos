@@ -1,7 +1,9 @@
 "use client";
 
 import { type FormEvent, useState } from "react";
-import type { ClientDetail } from "@/lib/clients";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import type { ClientDetail } from "@/services/clients";
 import { saveClient, setClientArchived } from "./actions";
 
 export function ClientEditor({ client }: { client: ClientDetail }) {
@@ -41,53 +43,50 @@ export function ClientEditor({ client }: { client: ClientDetail }) {
 						{client.isArchived ? "Archived client" : "Client profile"}
 					</p>
 				</div>
-				<button
+				<Button
+					variant="secondary"
 					disabled={busy}
 					onClick={() => void toggleArchive()}
-					className="rounded-md border border-neutral-300 px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100"
 				>
 					{client.isArchived ? "Restore client" : "Archive client"}
-				</button>
+				</Button>
 			</div>
 			<form onSubmit={submit} className="mt-5 grid gap-3 sm:grid-cols-3">
 				<label className="text-sm text-neutral-700">
 					Full name
-					<input
+					<Input
 						required
 						maxLength={100}
 						value={fullName}
 						onChange={(event) => setFullName(event.target.value)}
-						className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
+						className="mt-1"
 					/>
 				</label>
 				<label className="text-sm text-neutral-700">
 					Email
-					<input
+					<Input
 						required
 						type="email"
 						maxLength={255}
 						value={email}
 						onChange={(event) => setEmail(event.target.value)}
-						className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
+						className="mt-1"
 					/>
 				</label>
 				<label className="text-sm text-neutral-700">
 					Phone WhatsApp
-					<input
+					<Input
 						required
 						maxLength={20}
 						value={phone}
 						onChange={(event) => setPhone(event.target.value)}
-						className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
+						className="mt-1"
 					/>
 				</label>
 				<div className="flex items-center gap-3 sm:col-span-3">
-					<button
-						disabled={busy}
-						className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
-					>
+					<Button type="submit" disabled={busy}>
 						Save details
-					</button>
+					</Button>
 					{message && (
 						<p role="status" className="text-sm text-neutral-600">
 							{message}

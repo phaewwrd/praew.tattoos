@@ -3,8 +3,8 @@
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { db } from "@/app/db";
-import { user } from "@/app/db/auth-schema";
+import { db } from "@/db";
+import { user } from "@/db/auth-schema";
 import { requireAdminSession } from "@/lib/admin-auth";
 import { auth } from "@/lib/auth";
 
@@ -31,7 +31,7 @@ export async function loginAdminAction(
 		return { error: "Enter a valid email and password." };
 	}
 
-	let account;
+	let account: { role: string | null; disabled: boolean | null }[];
 	try {
 		account = await db
 			.select({ role: user.role, disabled: user.disabled })
@@ -42,7 +42,7 @@ export async function loginAdminAction(
 		return { error: "Unable to sign in right now. Please try again." };
 	}
 
-	if (!account[0] || account[0].role !== "admin" || account[0].disabled) {
+	if (account[0]?.role !== "admin" || account[0].disabled) {
 		return { error: "Invalid email or password." };
 	}
 
