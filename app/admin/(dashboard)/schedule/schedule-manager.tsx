@@ -3,7 +3,7 @@
 import { FreeSlotsTable } from "@/components/features/admin/FreeSlotsTable";
 import { ScheduleSlotRow } from "@/components/features/admin/ScheduleSlotRow";
 import { Button } from "@/components/ui/Button";
-import { Calendar } from "@/components/ui/Calendar";
+import { Calendar } from "@/components/ui/calendar";
 import { useScheduleManager } from "@/hooks/useScheduleManager";
 import type {
 	AdminScheduleAllFreeSlots,
