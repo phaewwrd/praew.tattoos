@@ -44,6 +44,19 @@ export async function getAdminSession(): Promise<AdminSession | null> {
   }
 }
 
+export class UnauthorizedError extends Error {
+  constructor() {
+    super("Unauthorized");
+  }
+}
+
+/** For server actions and route handlers: throws instead of redirecting. */
+export async function requireAdmin(): Promise<AdminSession> {
+  const session = await getAdminSession();
+  if (!session) throw new UnauthorizedError();
+  return session;
+}
+
 export async function requireAdminSession(): Promise<AdminSession> {
   const session = await getAdminSession();
   if (!session) {
