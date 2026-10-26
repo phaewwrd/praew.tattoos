@@ -1,7 +1,43 @@
-export default function Home() {
+import { BookingSection } from "@/components/site/BookingSection";
+import { InstagramStrip } from "@/components/site/InstagramStrip";
+import { ServiceStage } from "@/components/site/ServiceStage";
+import { SiteFooter } from "@/components/site/SiteFooter";
+import { SiteHeader } from "@/components/site/SiteHeader";
+import { toBangkokDate } from "@/lib/time";
+import { listMonthImages } from "@/server/content";
+import { getInstagramFeed } from "@/server/instagram";
+import { listServices } from "@/server/services";
+import { getPublicSettings } from "@/server/settings";
+import { listPublicSlots } from "@/server/slots";
+
+// Availability must always be current.
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const [settings, services, slots, monthImages, feed] = await Promise.all([
+    getPublicSettings(),
+    listServices(),
+    listPublicSlots(),
+    listMonthImages(),
+    getInstagramFeed(),
+  ]);
+
   return (
-    <main className="grid min-h-dvh place-items-center">
-      <p>Praew.Tattoos: redesign in progress.</p>
-    </main>
+    <div className="paper-bg flex min-h-dvh flex-col overflow-x-clip">
+      <SiteHeader settings={settings} />
+      <main className="mx-auto w-full max-w-[90rem]">
+        <ServiceStage services={services} />
+        <InstagramStrip feed={feed} handle={settings.instagramHandle} />
+        <BookingSection
+          initialSlots={slots}
+          today={toBangkokDate()}
+          monthImages={Object.fromEntries(
+            monthImages.map((m) => [m.month, m.url]),
+          )}
+          heartImageUrl={settings.heartImageUrl}
+        />
+      </main>
+      <SiteFooter settings={settings} />
+    </div>
   );
 }

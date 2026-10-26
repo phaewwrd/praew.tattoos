@@ -2,14 +2,122 @@
 
 @theme {
   --color-cream: #f7f3e8;
+  --color-paper: #fffdf6;
   --color-ink: #2a1a17;
   --color-brand: #a01010;
+  --color-brand-dark: #7a0b0b;
   --color-mauve: #8b7878;
   --color-butter: #fff0b8;
+  --color-butter-line: #e9d58a;
   --color-sky: #86c5d8;
+  --color-vinyl: #141212;
 }
 
-body {
-  background: var(--color-cream);
-  color: var(--color-ink);
+@theme inline {
+  --font-stitch: var(--ff-stitch), ui-monospace, monospace;
+  --font-hand: var(--ff-hand), "Comic Sans MS", cursive;
+  --font-sans: var(--ff-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-brand);
+    outline-offset: 3px;
+  }
+  dialog::backdrop {
+    background: rgb(42 26 23 / 55%);
+  }
+}
+
+/* Paper texture for the public site. */
+.paper-bg {
+  background-color: var(--color-cream);
+  background-image:
+    radial-gradient(rgb(139 120 120 / 12%) 1px, transparent 1px),
+    radial-gradient(rgb(139 120 120 / 8%) 1px, transparent 1px);
+  background-position:
+    0 0,
+    11px 13px;
+  background-size:
+    22px 22px,
+    26px 26px;
+}
+
+/* Vinyl grooves. */
+.vinyl-grooves {
+  background:
+    radial-gradient(
+      circle,
+      transparent 0 18%,
+      rgb(255 255 255 / 6%) 18.5% 19%,
+      transparent 19.5%
+    ),
+    repeating-radial-gradient(circle, #1b1818 0 2px, #0e0c0c 2px 4px);
+}
+
+/* Lined yellow notepad. */
+.notepad-lines {
+  background-color: var(--color-butter);
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent 2.6rem,
+      rgb(160 16 16 / 35%) 2.6rem 2.7rem,
+      transparent 2.7rem
+    ),
+    repeating-linear-gradient(
+      transparent 0 1.95rem,
+      var(--color-butter-line) 1.95rem 2rem
+    );
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin-slow {
+  animation: spin 4s linear infinite;
+}
+
+.spin-very-slow {
+  animation: spin 30s linear infinite;
+}
+
+.paused {
+  animation-play-state: paused;
+}
+
+@keyframes drop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) rotate(-8deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.drop-in {
+  animation: drop-in 450ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .spin-slow,
+  .spin-very-slow,
+  .drop-in {
+    animation: none;
+  }
 }
