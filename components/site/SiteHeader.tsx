@@ -71,7 +71,7 @@ export function SiteHeader({
           </li>
           <li>
             <Link className={navLink} href="/faq">
-              Question
+              Question.
             </Link>
           </li>
         </ul>
