@@ -19,7 +19,7 @@ export default async function SettingsPage() {
         studio={studio}
         token={{
           hasToken: token.hasToken,
-          storedInDb: token.storedInDb,
+          fromEnv: token.fromEnv,
           expiresAt: token.expiresAt?.toISOString() ?? null,
           refreshedAt: token.refreshedAt?.toISOString() ?? null,
         }}

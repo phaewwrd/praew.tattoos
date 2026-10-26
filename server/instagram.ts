@@ -3,7 +3,7 @@ import "server-only";
 import { eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import { db } from "@/db";
-import { type InstagramPost, instagramCache } from "@/db/schema";
+import { type InstagramPost, instagramCache, siteSettings } from "@/db/schema";
 import { ActionError } from "@/lib/server-response";
 import { listFallbackImages } from "@/server/content";
 import { updateSettings } from "@/server/settings";
@@ -40,16 +40,24 @@ async function graphGet<T>(
   return body;
 }
 
-/** Token from META_ACCESS_TOKEN, mirrored into settings. */
+/** META_ACCESS_TOKEN when set, otherwise the token saved in Admin → Settings. */
 export async function getInstagramToken(): Promise<string | null> {
   const fromEnv = process.env.META_ACCESS_TOKEN?.trim();
-  if (!fromEnv) return null;
-  await updateSettings({ instagramToken: fromEnv });
-  return fromEnv;
+  if (fromEnv) return fromEnv;
+  const [row] = await db
+    .select({ token: siteSettings.instagramToken })
+    .from(siteSettings)
+    .where(eq(siteSettings.id, 1));
+  return row?.token ?? null;
 }
 
 /** Admin: verify and store a new long-lived token. */
 export async function saveInstagramToken(token: string) {
+  if (!IG_USER_ID)
+    throw new ActionError(
+      "INVALID_INPUT",
+      "Set INSTAGRAM_BUSINESS_ACCOUNT_ID before saving a token.",
+    );
   try {
     await graphGet(`/${IG_USER_ID}`, {
       fields: "id,username",

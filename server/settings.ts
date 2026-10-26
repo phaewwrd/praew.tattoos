@@ -53,7 +53,7 @@ export async function getInstagramTokenStatus() {
     .where(eq(siteSettings.id, 1));
   return {
     hasToken: Boolean(row?.hasToken) || Boolean(process.env.META_ACCESS_TOKEN),
-    storedInDb: Boolean(row?.hasToken),
+    fromEnv: Boolean(process.env.META_ACCESS_TOKEN?.trim()),
     expiresAt: row?.expiresAt ?? null,
     refreshedAt: row?.refreshedAt ?? null,
   };

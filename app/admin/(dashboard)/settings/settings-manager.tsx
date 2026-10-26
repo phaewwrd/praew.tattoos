@@ -33,7 +33,7 @@ type Props = {
   studio: SiteSettingsInput;
   token: {
     hasToken: boolean;
-    storedInDb: boolean;
+    fromEnv: boolean;
     expiresAt: string | null;
     refreshedAt: string | null;
   };
@@ -145,10 +145,10 @@ function InstagramCard({
         <dt className="text-neutral-500">Token</dt>
         <dd>
           {!token.hasToken
-            ? "Missing: set INSTAGRAM_ACCESS_TOKEN or paste one below"
-            : token.storedInDb
-              ? "Stored in database"
-              : "From environment (copied to DB on first use)"}
+            ? "Missing: set META_ACCESS_TOKEN or paste one below"
+            : token.fromEnv
+              ? "From META_ACCESS_TOKEN (overrides a pasted token)"
+              : "Stored in database"}
         </dd>
         <dt className="text-neutral-500">Expires</dt>
         <dd

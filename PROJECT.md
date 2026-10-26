@@ -68,7 +68,7 @@ Seed services: Minimal Tattoo 1500, Realistic 2500, Color Realistic 2500.
 ### 3.2 Instagram strip
 - Horizontal row of recent posts with a "next" arrow, live from the Instagram API
   (Instagram API with Instagram Login; Basic Display API is discontinued). Reuse the existing integration.
-- Token from env INSTAGRAM_ACCESS_TOKEN, copied to the DB on first use. Long-lived token (~60 days):
+- Token from env META_ACCESS_TOKEN (Facebook Login, graph.facebook.com), or pasted in Admin. Long-lived token (~60 days):
   ensure automatic refresh exists via Vercel Cron on a protected route (CRON_SECRET), Hobby-plan
   compatible (max once/day). Add it if missing.
 - Cache (revalidate ~1h). On API failure show last cached result; if none, show admin-uploaded fallback images.
@@ -150,7 +150,7 @@ rendered in Asia/Bangkok. Use a clean initial migration.
 - Zod validation on client and server for every input.
 - Public booking endpoint: rate limit + honeypot.
 - Secrets only via env vars: DATABASE_URL, BETTER_AUTH_SECRET, BETTER_AUTH_URL, CLOUDINARY_CLOUD_NAME,
-  CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, INSTAGRAM_ACCESS_TOKEN, CRON_SECRET, ADMIN_EMAIL,
+  CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, META_ACCESS_TOKEN, INSTAGRAM_BUSINESS_ACCOUNT_ID, CRON_SECRET, ADMIN_EMAIL,
   ADMIN_PASSWORD. Update .env.example. Never print or commit real secrets.
 - `biome check .` and `tsc --noEmit` must pass after each step in section 7. Add a pre-commit hook
   and a GitHub Actions job running both (update existing CI if there is one).

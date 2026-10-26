@@ -25,7 +25,9 @@ For local development, set `BETTER_AUTH_URL=http://localhost:3000`, otherwise ad
 | `BETTER_AUTH_URL` | Public origin, e.g. `https://praew-tattoos.vercel.app` |
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Admin created by `pnpm db:seed`. The password is only set when the account is created; later changes are made in Admin → Settings |
 | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Signed uploads from admin. Optional `CLOUDINARY_UPLOAD_FOLDER` (default `praew-tattoos`) |
-| `INSTAGRAM_ACCESS_TOKEN` | Long-lived **Instagram Login** token. It is copied into the DB on first use |
+| `META_ACCESS_TOKEN` | Long-lived **Facebook Login** (`EAA…`) token. When set, it overrides a token pasted in Admin |
+| `INSTAGRAM_BUSINESS_ACCOUNT_ID` | Instagram business account ID the feed is read from |
+| `META_GRAPH_API_VERSION` | Optional Graph API version (default `v26.0`) |
 | `CRON_SECRET` | Protects the cron route. Vercel sends it as `Authorization: Bearer …` |
 
 Never commit real values. `.env*` is gitignored, except `.env.example`.
@@ -39,11 +41,11 @@ Never commit real values. `.env*` is gitignored, except `.env.example`.
 
 ## Instagram
 
-The site uses the **Instagram API with Instagram Login** (`graph.instagram.com`). The Basic Display API is discontinued, and Facebook-Login tokens do not work here.
+The site uses the **Instagram API with Facebook Login** (`graph.facebook.com/{version}/{INSTAGRAM_BUSINESS_ACCOUNT_ID}/media`). The Basic Display API is discontinued.
 
-1. In the Meta developer app, open Instagram → API setup with Instagram login, then generate a token for the Praew.tattoos account.
-2. Set it as `INSTAGRAM_ACCESS_TOKEN`, or paste it in Admin → Settings → Instagram, where it is verified before saving.
-3. Vercel Cron calls `/api/cron/instagram-refresh` daily (20:00 UTC = 03:00 Bangkok, see `vercel.json`) to refresh the token before its ~60-day expiry. You can check the expiry in Admin → Settings.
+1. In the Meta developer app, generate a long-lived Facebook Login (`EAA…`) token with Instagram permissions for the Praew.tattoos business account.
+2. Set `INSTAGRAM_BUSINESS_ACCOUNT_ID`, then set the token as `META_ACCESS_TOKEN` or paste it in Admin → Settings → Instagram, where it is verified before saving. The env var wins when both exist.
+3. Facebook Login tokens cannot be refreshed by the daily cron (`/api/cron/instagram-refresh`); it skips them. Renew the token in Meta's dashboard before it expires.
 
 The feed is cached for 1 hour. If the API fails, the site shows the last cached posts, then the fallback images uploaded in Settings.
 
