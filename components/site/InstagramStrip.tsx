@@ -34,7 +34,7 @@ export function InstagramStrip({
     >
       <h2
         id="instagram-title"
-        className="mb-4 font-semibold text-2xl text-brand uppercase"
+        className="mb-4 font-semibold text-brand text-xs uppercase"
       >
         <a
           href={instagramUrl(handle)}

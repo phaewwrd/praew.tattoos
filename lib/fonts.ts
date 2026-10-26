@@ -1,4 +1,4 @@
-import { Archivo, Caveat, Silkscreen } from "next/font/google";
+import { Caveat, Roboto, Silkscreen } from "next/font/google";
 
 // The three type styles of the site, all in one place.
 
@@ -15,8 +15,8 @@ export const handFont = Caveat({
   variable: "--ff-hand",
 });
 
-/** (c) Bold sans-serif for navigation and service names (also body text). */
-export const sansFont = Archivo({
+/** (c) Roboto (variable, 100–900) for body text, navigation and service names. */
+export const sansFont = Roboto({
   subsets: ["latin"],
   variable: "--ff-sans",
 });

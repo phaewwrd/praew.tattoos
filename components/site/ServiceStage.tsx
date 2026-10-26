@@ -39,7 +39,7 @@ export function ServiceStage({
     <section
       id="services"
       aria-label="Services"
-      className="relative scroll-mt-6 px-4 pt-6 sm:px-8 lg:grid lg:min-h-[54rem] lg:grid-cols-[16rem_minmax(0,1fr)_30%] lg:grid-rows-[auto_1fr] lg:gap-x-12 lg:px-10 lg:pt-8"
+      className="relative scroll-mt-6 px-4 pt-6 sm:px-8 lg:grid lg:min-h-216 lg:grid-cols-[16rem_minmax(0,1fr)_30%] lg:grid-rows-[auto_1fr] lg:gap-x-12 lg:px-10 lg:pt-8"
     >
       {/* Cross-stitch corner letters */}
       <Image
@@ -58,7 +58,7 @@ export function ServiceStage({
       />
 
       {/* Wordmark: logo on top for small screens, behind the player on wide ones. */}
-      <h1 className="mx-auto mb-6 w-full max-w-xl lg:pointer-events-none lg:absolute lg:top-[19rem] lg:left-[19%] lg:z-0 lg:mb-0 lg:w-[56%] lg:max-w-none">
+      <h1 className="mx-auto mb-6 w-full max-w-xl lg:pointer-events-none lg:absolute lg:top-76 lg:left-[19%] lg:z-0 lg:mb-0 lg:w-[56%] lg:max-w-none">
         <Image
           src="/wordmark.png"
           alt="Praew.Tattoos"
@@ -71,7 +71,7 @@ export function ServiceStage({
 
       {/* Left: stacked service cards */}
       <div className="lg:relative lg:z-10 lg:row-span-2">
-        <h2 className="mb-4 font-semibold text-2xl text-brand uppercase">
+        <h2 className="mb-4 font-semibold text-brand text-xs uppercase">
           Services
         </h2>
         {count === 0 ? (
@@ -114,10 +114,10 @@ export function ServiceStage({
                         />
                       ) : null}
                     </span>
-                    <span className="mt-4 block font-semibold text-2xl text-brand uppercase leading-none">
+                    <span className="mt-4 block font-semibold text-base text-brand uppercase leading-none">
                       {service.name}
                     </span>
-                    <span className="mt-1 block font-semibold text-brand text-xs uppercase">
+                    <span className="mt-1 block font-medium text-brand text-xs uppercase">
                       {startAt(service.priceThb)}
                     </span>
                   </button>
@@ -135,7 +135,7 @@ export function ServiceStage({
 
       {/* Center: record-player card */}
       {current ? (
-        <div className="relative z-10 mx-auto mt-6 w-full max-w-80 bg-linen p-6 lg:col-start-2 lg:row-start-2 lg:mt-14 lg:self-start">
+        <div className="relative z-10 mx-auto mt-6 w-full max-w-80 bg-linen/50 p-6 lg:col-start-2 lg:row-start-2 lg:mt-14 lg:self-start">
           <Image
             src="/turntable.png"
             alt="Red record player"

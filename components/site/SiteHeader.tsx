@@ -8,7 +8,7 @@ import type { PublicSettings } from "@/server/settings";
 import { Modal } from "./Modal";
 
 const navLink =
-  "py-1 font-semibold text-brand text-base uppercase underline-offset-4 hover:underline sm:text-lg lg:text-xl";
+  "py-1 font-semibold text-brand text-base uppercase underline-offset-4 hover:underline sm:text-xs lg:text-base";
 
 export function SiteHeader({
   settings,
