@@ -1,159 +1,108 @@
 import "dotenv/config";
-import { and, eq } from "drizzle-orm";
+import { hashPassword } from "better-auth/crypto";
+import { eq, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { slots, tattooArtists, tattooServices } from "@/db/tattoo-schema";
+import { account, faqs, services, siteSettings, user } from "@/db/schema";
+import { DEFAULT_SITE_SETTINGS } from "@/lib/site-defaults";
 
-const serviceSeeds = [
+// Idempotent: safe to run repeatedly. Never overwrites admin edits.
+
+const SERVICES = [
+  { name: "Minimal Tattoo", priceThb: 1500, sortOrder: 0 },
+  { name: "Realistic", priceThb: 2500, sortOrder: 1 },
+  { name: "Color Realistic", priceThb: 2500, sortOrder: 2 },
+];
+
+const FAQS = [
   {
-    id: "fine-line",
-    name: "Fine Line Tattoo",
-    slug: "fine-line-tattoo",
-    description:
-      "Delicate, considered linework for small to medium custom pieces.",
-    priceFrom: 2500,
-    depositAmount: 1000,
-    durationMinutes: 90,
-    isActive: true,
-    sortOrder: 1,
+    question: "How do I book an appointment?",
+    answer:
+      "Pick a free day and time in the booking calendar and send your request. The studio will email you to confirm and arrange the deposit.",
   },
   {
-    id: "ornamental",
-    name: "Ornamental Tattoo",
-    slug: "ornamental-tattoo",
-    description:
-      "Flowing decorative designs composed for the placement and body.",
-    priceFrom: 4000,
-    depositAmount: 1000,
-    durationMinutes: 180,
-    isActive: true,
-    sortOrder: 2,
+    question: "Do I need to pay a deposit?",
+    answer:
+      "Yes. Once your request is confirmed, the studio will send deposit details by email. Your slot is secured after the deposit is received.",
   },
   {
-    id: "custom-color",
-    name: "Custom Color Tattoo",
-    slug: "custom-color-tattoo",
-    description:
-      "Color-focused work, discussed and designed for each individual piece.",
-    priceFrom: 5000,
-    depositAmount: 1500,
-    durationMinutes: 240,
-    isActive: true,
-    sortOrder: 3,
+    question: "Where is the studio?",
+    answer:
+      "We are in Bangkok, about 10 minutes' walk from MRT Bangson (exit 5). Full studio details are shared with confirmed appointments.",
   },
   {
-    id: "guest-flash",
-    name: "Guest Flash",
-    slug: "guest-flash",
-    description: "A limited guest-artist offering.",
-    priceFrom: 0,
-    depositAmount: 0,
-    durationMinutes: 60,
-    isActive: false,
-    sortOrder: 4,
+    question: "How should I prepare for my session?",
+    answer:
+      "Get a good night's sleep, eat beforehand, stay hydrated and avoid alcohol for 24 hours before your appointment.",
   },
-] as const;
+];
 
-const slotSeeds = [
-  { date: "2026-10-02", startTime: "11:00:00", endTime: "12:30:00" },
-  { date: "2026-10-02", startTime: "13:30:00", endTime: "15:00:00" },
-  { date: "2026-10-02", startTime: "16:00:00", endTime: "17:30:00" },
-  { date: "2026-10-04", startTime: "10:30:00", endTime: "12:00:00" },
-  { date: "2026-10-04", startTime: "14:00:00", endTime: "15:30:00" },
-  { date: "2026-10-08", startTime: "11:00:00", endTime: "12:30:00" },
-  { date: "2026-10-08", startTime: "15:30:00", endTime: "17:00:00" },
-  { date: "2026-10-08", startTime: "17:30:00", endTime: "19:00:00" },
-  { date: "2026-10-11", startTime: "12:00:00", endTime: "13:30:00" },
-  { date: "2026-10-11", startTime: "14:30:00", endTime: "16:00:00" },
-  { date: "2026-10-16", startTime: "10:30:00", endTime: "12:00:00" },
-  { date: "2026-10-16", startTime: "13:00:00", endTime: "14:30:00" },
-  { date: "2026-10-16", startTime: "16:30:00", endTime: "18:00:00" },
-  { date: "2026-10-21", startTime: "11:30:00", endTime: "13:00:00" },
-  { date: "2026-10-21", startTime: "14:00:00", endTime: "15:30:00" },
-  { date: "2026-10-25", startTime: "10:30:00", endTime: "12:00:00" },
-  { date: "2026-10-25", startTime: "13:30:00", endTime: "15:00:00" },
-  { date: "2026-10-25", startTime: "16:00:00", endTime: "17:30:00" },
-] as const;
+async function seedAdmin() {
+  const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const password = process.env.ADMIN_PASSWORD;
+  if (!email || !password || password.length < 8 || password.length > 128) {
+    throw new Error(
+      "Set ADMIN_EMAIL and an ADMIN_PASSWORD between 8 and 128 characters.",
+    );
+  }
 
-async function ensureArtist() {
-  const existing = await db
-    .select({ id: tattooArtists.id })
-    .from(tattooArtists)
-    .limit(1);
-  if (existing[0]) return existing[0].id;
-
-  const inserted = await db
-    .insert(tattooArtists)
-    .values({
-      name: "Praew",
-      email: "hello@praew.tattoos",
-      phone: "-",
-      bio: "Fine line and ornamental tattoo artist.",
-    })
-    .returning({ id: tattooArtists.id });
-
-  return inserted[0].id;
-}
-
-async function seedServices() {
-  for (const service of serviceSeeds) {
+  const [existing] = await db
+    .select({ id: user.id })
+    .from(user)
+    .where(eq(user.email, email));
+  if (existing) {
     await db
-      .insert(tattooServices)
-      .values({
-        ...service,
-        priceFrom: service.priceFrom.toFixed(2),
-        depositAmount: service.depositAmount.toFixed(2),
-      })
-      .onConflictDoUpdate({
-        target: tattooServices.id,
-        set: {
-          name: service.name,
-          slug: service.slug,
-          description: service.description,
-          priceFrom: service.priceFrom.toFixed(2),
-          depositAmount: service.depositAmount.toFixed(2),
-          durationMinutes: service.durationMinutes,
-          isActive: service.isActive,
-          sortOrder: service.sortOrder,
-          updatedAt: new Date(),
-        },
-      });
+      .update(user)
+      .set({ role: "admin", disabled: false })
+      .where(eq(user.id, existing.id));
+    console.log("Admin already exists; password left unchanged.");
+    return;
   }
-}
 
-async function seedSlots(artistId: number) {
-  for (const slot of slotSeeds) {
-    const exists = await db
-      .select({ id: slots.id })
-      .from(slots)
-      .where(
-        and(
-          eq(slots.artistId, artistId),
-          eq(slots.date, slot.date),
-          eq(slots.startTime, slot.startTime),
-        ),
-      )
-      .limit(1);
-
-    if (exists[0]) continue;
-
-    await db.insert(slots).values({
-      artistId,
-      date: slot.date,
-      startTime: slot.startTime,
-      endTime: slot.endTime,
-      status: "AVAILABLE",
+  const userId = crypto.randomUUID();
+  await db.transaction(async (tx) => {
+    await tx.insert(user).values({
+      id: userId,
+      name: "Praew",
+      email,
+      emailVerified: true,
+      role: "admin",
     });
-  }
+    await tx.insert(account).values({
+      id: crypto.randomUUID(),
+      accountId: userId,
+      providerId: "credential",
+      userId,
+      password: await hashPassword(password),
+    });
+  });
+  console.log("Admin account created.");
 }
 
 async function main() {
-  const artistId = await ensureArtist();
-  await seedServices();
-  await seedSlots(artistId);
-  console.log("Seed complete: tattoo services and slots are up to date.");
+  await seedAdmin();
+
+  await db
+    .insert(siteSettings)
+    .values({ id: 1, ...DEFAULT_SITE_SETTINGS })
+    .onConflictDoNothing();
+
+  await db.insert(services).values(SERVICES).onConflictDoNothing();
+
+  const [{ count }] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(faqs);
+  if (count === 0) {
+    await db
+      .insert(faqs)
+      .values(FAQS.map((faq, sortOrder) => ({ ...faq, sortOrder })));
+  }
+
+  console.log("Seed complete.");
 }
 
-main().catch((error) => {
-  console.error("Seed failed", error);
-  process.exitCode = 1;
-});
+main()
+  .catch((error: unknown) => {
+    console.error(error instanceof Error ? error.message : error);
+    process.exitCode = 1;
+  })
+  .finally(() => process.exit());

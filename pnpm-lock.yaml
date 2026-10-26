@@ -38,24 +38,15 @@ importers:
       drizzle-orm:
         specifier: 0.45.3
         version: 0.45.3(@neondatabase/serverless@1.1.0)(kysely@0.29.6)
-      leaflet:
-        specifier: ^1.9.4
-        version: 1.9.4
       next:
         specifier: 16.3.6
         version: 16.3.6(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react:
         specifier: 19.2.8
         version: 19.2.8
-      react-day-picker:
-        specifier: ^10.0.1
-        version: 10.0.1(@types/react@19.3.0)(react@19.2.8)
       react-dom:
         specifier: 19.2.8
         version: 19.2.8(react@19.2.8)
-      react-leaflet:
-        specifier: ^5.0.0
-        version: 5.0.0(leaflet@1.9.4)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       tailwind-merge:
         specifier: ^3.7.0
         version: 3.7.0
@@ -69,9 +60,6 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.3.3
-      '@types/leaflet':
-        specifier: ^1.9.22
-        version: 1.9.22
       '@types/node':
         specifier: ^20
         version: 20.19.43
@@ -93,15 +81,9 @@ importers:
       tsx:
         specifier: ^4.23.15
         version: 4.23.15
-      types:
-        specifier: ^0.1.1
-        version: 0.1.1
       typescript:
         specifier: ^5
         version: 5.9.3
-      ws:
-        specifier: ^8.22.0
-        version: 8.22.0
 
 packages:
 
@@ -240,9 +222,6 @@ packages:
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
-
-  '@date-fns/tz@1.5.0':
-    resolution: {integrity: sha512-lwYN/vDPeNRULcepoE/LO2Pgx+7/RV+S9ARfbc9lr2DtGkOD7pAiruHvbR1RX3Qyf6ja47EWJDMsNK5vK08DJg==}
 
   '@drizzle-team/brocli@0.10.2':
     resolution: {integrity: sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w==}
@@ -931,13 +910,6 @@ packages:
     resolution: {integrity: sha512-eSYWTm620tTk45EKSedaUL8MFYI8hW164hIXsgIHyxu3VobUB3fFCu5t0hQby6OoWRPsG1KkKUG2M5UadiLiVg==}
     engines: {node: '>=14'}
 
-  '@react-leaflet/core@3.0.0':
-    resolution: {integrity: sha512-3EWmekh4Nz+pGcr+xjf0KNyYfC3U2JjnkWsh0zcqaexYqmmB5ZhH37kz41JXGmKzpaMZCnPofBBm64i+YrEvGQ==}
-    peerDependencies:
-      leaflet: ^1.9.0
-      react: ^19.0.0
-      react-dom: ^19.0.0
-
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
@@ -1080,12 +1052,6 @@ packages:
     resolution: {integrity: sha512-zQvlxSNi2qGM3L4jh85Z6hqMfdIR5qOfD9KHOU32nuKFJGN0RlJ7UvV1lsPb1fPVhpFYI0VP3jJGxLdLDpTKjQ==}
     engines: {node: '>=20'}
 
-  '@types/geojson@7946.0.16':
-    resolution: {integrity: sha512-6C8nqWur3j98U6+lXDfTUWIfgvZU+EumvpHKcYjujKH7woYyLj2sUmff0tRhrqM7BohUw7Pz3ZB1jj2gW9Fvmg==}
-
-  '@types/leaflet@1.9.22':
-    resolution: {integrity: sha512-h3lhECYEKDasG7LFHu+GiHqAvsgLuQvlJvVZzJDGONo3sEL+wUOqSFLnwkZlK0qVxnxbuGFW8iBlJNYs5wgndA==}
-
   '@types/node@20.19.43':
     resolution: {integrity: sha512-6oYBAi5ikg4Pl+kGsoYtawUMBT2zZMCvPNF7pVLnHZfd1zf38DRiWn/gT01RYCdUqkv7Fhr+C9ot4/tb+2sVvA==}
 
@@ -1188,9 +1154,6 @@ packages:
 
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
-
-  date-fns@4.4.0:
-    resolution: {integrity: sha512-+1UMbeh68lH1SegH83CGWwpb6OHHbpSgr3+s5Eww5M4CAgswBpoWS0AjTOfEJ33HiYKz1hdj/KTFprzXHmq/6w==}
 
   defu@6.1.7:
     resolution: {integrity: sha512-7z22QmUWiQ/2d0KkdYmANbRUVABpZ9SNYyH5vx6PZ+nE5bcC0l7uFvEfHlyld/HcGBFTL536ClDt3DEcSlEJAQ==}
@@ -1344,9 +1307,6 @@ packages:
     resolution: {integrity: sha512-hHaB8C/rfzDDtr/t8YZwxAuPJTT0zHyaPoVzcXwDYhYNAgH/4sIfVhi/XLLIY+bL/FqaIJnjATDbi8ObSELmxg==}
     engines: {node: '>=22.0.0'}
 
-  leaflet@1.9.4:
-    resolution: {integrity: sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA==}
-
   lightningcss-android-arm64@1.32.0:
     resolution: {integrity: sha512-YK7/ClTt4kAK0vo6w3X+Pnm0D2cf2vPHbhOXdoNti1Ga0al1P4TBZhwjATvjNwLEBCnKvjJc2jQgHXH0NEwlAg==}
     engines: {node: '>= 12.0.0'}
@@ -1464,27 +1424,10 @@ packages:
     resolution: {integrity: sha512-RRuzqDtt5Y9h3quz5hWhK+TPnsmVs6WwSU6LkJMeY4HstUEDuYTG8UJSdawMRzmzAtV+KEoG8N3Qg2qLy5vM/A==}
     engines: {node: ^10 || ^12 || >=14}
 
-  react-day-picker@10.0.1:
-    resolution: {integrity: sha512-eNh6BlwcYInWaJtRv18mXQ06Ys/H6rdTZAnTaSdOYJuTpwP1JMCHNd1FDRadA+gbeinq+psdULN5Xnowy9mV8w==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      '@types/react': '>=16.8.0'
-      react: '>=16.8.0'
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-
   react-dom@19.2.8:
     resolution: {integrity: sha512-rVprimfGBG3DR+Tq0IQG2DT5PxKth1WIGDmj5yPmlzr4YBe7uyE+Du4oVqTDXZSHGGGXRtTJEGSSePyQCMBglQ==}
     peerDependencies:
       react: ^19.2.8
-
-  react-leaflet@5.0.0:
-    resolution: {integrity: sha512-CWbTpr5vcHw5bt9i4zSlPEVQdTVcML390TjeDG0cK59z1ylexpqC6M1PJFjV8jD7CF+ACBFsLIDs6DRMoLEofw==}
-    peerDependencies:
-      leaflet: ^1.9.0
-      react: ^19.0.0
-      react-dom: ^19.0.0
 
   react@19.2.8:
     resolution: {integrity: sha512-PWaYA1L/q9u2u7xYQi+Y3L3Yfnie7XyLeaJICV1MGD6LprsBxcAqGjYyr0eY3p+QdsA+x/Irkt4Qif8D63+Sbw==}
@@ -1562,10 +1505,6 @@ packages:
     engines: {node: '>=18.0.0'}
     hasBin: true
 
-  types@0.1.1:
-    resolution: {integrity: sha512-JuntZtJj4MKLE9x/XBs7IjsznYhzETwr34pw3XJTKvgYtAMdeMG+o8x8U85E5Lm6eCPa1DdOdGVsHMwq4ZnZAg==}
-    engines: {node: '>= 0.6.0'}
-
   typescript@5.9.3:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
     engines: {node: '>=14.17'}
@@ -1578,18 +1517,6 @@ packages:
     resolution: {integrity: sha512-6L+EeigHMQhdaIPNIFUKwfWJSwWFQ8gJbJ2DLOs5sDIegTwR9fRxvnM3uciHKjIZhFz+KAv2emhWMRvDmMcY8A==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-
-  ws@8.22.0:
-    resolution: {integrity: sha512-Ydggc987+RO0AnWtZ/7Wq9FtNvcrL1b/RO0ud9mWjUPgDrsAAwQSF51sm2hm1XofbU/4jkpGEsLFsZZxU+1DOg==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
 
   zod@4.6.7:
     resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
@@ -1708,8 +1635,6 @@ snapshots:
 
   '@biomejs/cli-win32-x64@2.5.14':
     optional: true
-
-  '@date-fns/tz@1.5.0': {}
 
   '@drizzle-team/brocli@0.10.2': {}
 
@@ -2110,12 +2035,6 @@ snapshots:
 
   '@opentelemetry/semantic-conventions@1.43.0': {}
 
-  '@react-leaflet/core@3.0.0(leaflet@1.9.4)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
-    dependencies:
-      leaflet: 1.9.4
-      react: 19.2.8
-      react-dom: 19.2.8(react@19.2.8)
-
   '@standard-schema/spec@1.1.0': {}
 
   '@swc/helpers@0.5.23':
@@ -2237,12 +2156,6 @@ snapshots:
     dependencies:
       '@tanstack/store': 0.11.2
 
-  '@types/geojson@7946.0.16': {}
-
-  '@types/leaflet@1.9.22':
-    dependencies:
-      '@types/geojson': 7946.0.16
-
   '@types/node@20.19.43':
     dependencies:
       undici-types: 6.21.0
@@ -2307,8 +2220,6 @@ snapshots:
   clsx@2.1.1: {}
 
   csstype@3.2.3: {}
-
-  date-fns@4.4.0: {}
 
   defu@6.1.7: {}
 
@@ -2431,8 +2342,6 @@ snapshots:
 
   kysely@0.29.6: {}
 
-  leaflet@1.9.4: {}
-
   lightningcss-android-arm64@1.32.0:
     optional: true
 
@@ -2531,25 +2440,10 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  react-day-picker@10.0.1(@types/react@19.3.0)(react@19.2.8):
-    dependencies:
-      '@date-fns/tz': 1.5.0
-      date-fns: 4.4.0
-      react: 19.2.8
-    optionalDependencies:
-      '@types/react': 19.3.0
-
   react-dom@19.2.8(react@19.2.8):
     dependencies:
       react: 19.2.8
       scheduler: 0.27.0
-
-  react-leaflet@5.0.0(leaflet@1.9.4)(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
-    dependencies:
-      '@react-leaflet/core': 3.0.0(leaflet@1.9.4)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      leaflet: 1.9.4
-      react: 19.2.8
-      react-dom: 19.2.8(react@19.2.8)
 
   react@19.2.8: {}
 
@@ -2628,8 +2522,6 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  types@0.1.1: {}
-
   typescript@5.9.3: {}
 
   undici-types@6.21.0: {}
@@ -2637,7 +2529,5 @@ snapshots:
   use-sync-external-store@1.7.0(react@19.2.8):
     dependencies:
       react: 19.2.8
-
-  ws@8.22.0: {}
 
   zod@4.6.7: {}

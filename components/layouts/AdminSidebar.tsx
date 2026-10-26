@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef } from "react";
-import { AdminNav } from "@/components/features/admin/AdminNav";
+import { AdminNav } from "@/components/layouts/AdminNav";
 import { ADMIN_TITLE } from "@/constants/admin";
 import { useDisclosure } from "@/hooks/useDisclosure";
 
