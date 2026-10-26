@@ -3,14 +3,16 @@ import "server-only";
 import { eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import { db } from "@/db";
-import { type InstagramPost, instagramCache, siteSettings } from "@/db/schema";
+import { type InstagramPost, instagramCache } from "@/db/schema";
 import { ActionError } from "@/lib/server-response";
 import { listFallbackImages } from "@/server/content";
 import { updateSettings } from "@/server/settings";
 
-// Instagram API with Instagram Login (graph.instagram.com).
-// Long-lived tokens last ~60 days and can be refreshed once they are 24h old.
-const GRAPH = "https://graph.instagram.com";
+// Instagram API with Facebook Login (graph.facebook.com): META_ACCESS_TOKEN is an
+// EAA… token, which graph.instagram.com cannot parse.
+const GRAPH = "https://graph.facebook.com";
+const API_VERSION = process.env.META_GRAPH_API_VERSION?.trim() || "v26.0";
+const IG_USER_ID = process.env.INSTAGRAM_BUSINESS_ACCOUNT_ID?.trim();
 const MEDIA_FIELDS =
   "id,caption,media_type,media_url,thumbnail_url,permalink,timestamp";
 const POST_LIMIT = 12;
@@ -24,7 +26,7 @@ async function graphGet<T>(
   path: string,
   params: Record<string, string>,
 ): Promise<T> {
-  const url = new URL(path, GRAPH);
+  const url = new URL(`/${API_VERSION}${path}`, GRAPH);
   for (const [key, value] of Object.entries(params))
     url.searchParams.set(key, value);
   const response = await fetch(url, { cache: "no-store" });
@@ -38,15 +40,9 @@ async function graphGet<T>(
   return body;
 }
 
-/** Token from the DB, or copied from INSTAGRAM_ACCESS_TOKEN on first use. */
+/** Token from META_ACCESS_TOKEN, mirrored into settings. */
 export async function getInstagramToken(): Promise<string | null> {
-  const [row] = await db
-    .select({ token: siteSettings.instagramToken })
-    .from(siteSettings)
-    .where(eq(siteSettings.id, 1));
-  if (row?.token) return row.token;
-
-  const fromEnv = process.env.INSTAGRAM_ACCESS_TOKEN?.trim();
+  const fromEnv = process.env.META_ACCESS_TOKEN?.trim();
   if (!fromEnv) return null;
   await updateSettings({ instagramToken: fromEnv });
   return fromEnv;
@@ -55,7 +51,10 @@ export async function getInstagramToken(): Promise<string | null> {
 /** Admin: verify and store a new long-lived token. */
 export async function saveInstagramToken(token: string) {
   try {
-    await graphGet("/me", { fields: "id,username", access_token: token });
+    await graphGet(`/${IG_USER_ID}`, {
+      fields: "id,username",
+      access_token: token,
+    });
   } catch {
     throw new ActionError("INVALID_INPUT", "Instagram rejected this token.");
   }
@@ -71,6 +70,10 @@ export async function saveInstagramToken(token: string) {
 export async function refreshInstagramToken() {
   const token = await getInstagramToken();
   if (!token) return { refreshed: false, reason: "no token" as const };
+  // ig_refresh_token only accepts Instagram Login (IG…) tokens; Facebook Login
+  // tokens (EAA…) are renewed in Meta's dashboard instead.
+  if (token.startsWith("EAA"))
+    return { refreshed: false, reason: "facebook token" as const };
 
   const result = await graphGet<{ access_token: string; expires_in: number }>(
     "/refresh_access_token",
@@ -98,11 +101,16 @@ type GraphMedia = {
 async function fetchLivePosts(): Promise<InstagramPost[]> {
   const token = await getInstagramToken();
   if (!token) throw new Error("Instagram token is not configured.");
-  const { data } = await graphGet<{ data: GraphMedia[] }>("/me/media", {
-    fields: MEDIA_FIELDS,
-    limit: String(POST_LIMIT),
-    access_token: token,
-  });
+  if (!IG_USER_ID)
+    throw new Error("INSTAGRAM_BUSINESS_ACCOUNT_ID is not configured.");
+  const { data } = await graphGet<{ data: GraphMedia[] }>(
+    `/${IG_USER_ID}/media`,
+    {
+      fields: MEDIA_FIELDS,
+      limit: String(POST_LIMIT),
+      access_token: token,
+    },
+  );
   return data.flatMap((media) => {
     const imageUrl =
       media.media_type === "VIDEO" ? media.thumbnail_url : media.media_url;
