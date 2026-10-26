@@ -23,11 +23,15 @@ export default async function Home() {
   ]);
 
   return (
-    <div className="paper-bg flex min-h-dvh flex-col overflow-x-clip">
-      <SiteHeader settings={settings} />
-      <main className="mx-auto w-full max-w-[90rem]">
-        <ServiceStage services={services} />
-        <InstagramStrip feed={feed} handle={settings.instagramHandle} />
+    <div className="flex min-h-dvh flex-col overflow-x-clip bg-cream">
+      <main className="relative mx-auto w-full max-w-[100rem]">
+        <SiteHeader settings={settings} />
+        <ServiceStage
+          services={services}
+          instagram={
+            <InstagramStrip feed={feed} handle={settings.instagramHandle} />
+          }
+        />
         <BookingSection
           initialSlots={slots}
           today={toBangkokDate()}

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { instagramUrl, telUrl, whatsappUrl } from "@/lib/contact-links";
@@ -7,7 +8,7 @@ import type { PublicSettings } from "@/server/settings";
 import { Modal } from "./Modal";
 
 const navLink =
-  "px-2 py-1 font-black text-brand text-sm uppercase tracking-[0.12em] underline-offset-4 hover:underline sm:text-base";
+  "py-1 font-semibold text-brand text-base uppercase underline-offset-4 hover:underline sm:text-lg lg:text-xl";
 
 export function SiteHeader({
   settings,
@@ -18,50 +19,45 @@ export function SiteHeader({
 }) {
   const [open, setOpen] = useState<"location" | "contact" | null>(null);
   const close = () => setOpen(null);
-  const anchor = (id: string) => (home ? `#${id}` : `/#${id}`);
 
   return (
-    <header className="relative px-12 pt-6 pb-4 sm:px-24">
-      {/* Corner letters: cross-stitch artwork placeholders. */}
-      <span
-        aria-hidden="true"
-        className="absolute top-3 left-3 select-none font-bold font-stitch text-5xl text-brand/80 sm:text-7xl"
-      >
-        P
-      </span>
-      <span
-        aria-hidden="true"
-        className="absolute top-3 right-3 select-none font-bold font-stitch text-5xl text-brand/80 sm:text-7xl"
-      >
-        T
-      </span>
-
-      <Link href="/" className="mx-auto block w-fit">
-        {/* Logo placeholder until the cross-stitch lettering image is supplied. */}
-        <span className="block text-center font-bold font-stitch text-2xl text-brand tracking-wide sm:text-5xl">
-          {settings.studioName}
-        </span>
-      </Link>
-
-      <nav aria-label="Main" className="mt-4">
-        <ul className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:gap-x-6">
-          <li>
-            <a className={navLink} href={anchor("services")}>
-              Services
-            </a>
-          </li>
-          <li>
-            <a className={navLink} href={anchor("instagram")}>
-              Instagram
-            </a>
-          </li>
+    <header
+      className={
+        home
+          ? "relative z-30 px-4 pt-5 sm:px-8 lg:absolute lg:top-0 lg:right-0 lg:px-10 lg:pt-6"
+          : "relative px-4 pt-6 pb-2 sm:px-8"
+      }
+    >
+      {home ? null : (
+        <Link href="/" className="mx-auto mb-4 block w-full max-w-md">
+          <Image
+            src="/wordmark.png"
+            alt={settings.studioName}
+            width={1160}
+            height={250}
+            preload
+            className="h-auto w-full"
+          />
+        </Link>
+      )}
+      <nav aria-label="Main">
+        <ul
+          className={`flex flex-wrap items-center gap-x-5 gap-y-1 sm:gap-x-8 ${home ? "justify-center lg:justify-end" : "justify-center"}`}
+        >
+          {home ? null : (
+            <li>
+              <Link className={navLink} href="/#services">
+                Services.
+              </Link>
+            </li>
+          )}
           <li>
             <button
               type="button"
               className={navLink}
               onClick={() => setOpen("location")}
             >
-              Location
+              Location.
             </button>
           </li>
           <li>
@@ -70,7 +66,7 @@ export function SiteHeader({
               className={navLink}
               onClick={() => setOpen("contact")}
             >
-              Contact us
+              Contact us.
             </button>
           </li>
           <li>

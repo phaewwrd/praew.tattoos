@@ -10,6 +10,10 @@
   --color-butter: #fff0b8;
   --color-butter-line: #e9d58a;
   --color-sky: #86c5d8;
+  --color-teal: #78b3c4;
+  --color-linen: #e2dcd0;
+  --color-sand: #ece4d1;
+  --color-mint: #2fb79b;
   --color-vinyl: #141212;
 }
 
@@ -92,6 +96,21 @@
   animation: spin 30s linear infinite;
 }
 
+/* Same turn as the record, pivoting on its centre (offset by its 4% margin). */
+@media (min-width: 64rem) {
+  .spin-with-record {
+    animation: spin 30s linear infinite;
+    transform-origin: 54% 50%;
+  }
+  /* Counter-spin each photo so it orbits the record but stays upright. */
+  .spin-with-record > li {
+    animation: spin 30s linear infinite reverse;
+  }
+  .spin-with-record.paused > li {
+    animation-play-state: paused;
+  }
+}
+
 .paused {
   animation-play-state: paused;
 }
@@ -117,6 +136,8 @@
   }
   .spin-slow,
   .spin-very-slow,
+  .spin-with-record,
+  .spin-with-record > li,
   .drop-in {
     animation: none;
   }
