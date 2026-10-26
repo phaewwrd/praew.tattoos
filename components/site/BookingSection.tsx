@@ -172,7 +172,7 @@ export function BookingSection({
                       setSlotError(null);
                     }}
                     className={cn(
-                      "min-w-18 border-2 px-2.5 py-1 font-hand text-2xl disabled:cursor-not-allowed disabled:border-transparent disabled:bg-ink/10 disabled:text-ink/30",
+                      "min-w-10 border-2 px-2.5 py-1 font-hand text-xl disabled:cursor-not-allowed disabled:border-transparent disabled:bg-ink/10 disabled:text-ink/30",
                       slot.id === slotId
                         ? "border-brand bg-brand text-cream"
                         : "border-brand text-brand hover:bg-brand/10",

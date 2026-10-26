@@ -8,6 +8,8 @@ import type { ServiceWithImages } from "@/server/services";
 
 const CARD_TONES = ["bg-butter", "bg-sky", "bg-teal"];
 const CARD_TILTS = ["rotate-3", "-rotate-6", "rotate-12", "-rotate-3"];
+// Disc laid on the turntable for the selected service (cycles if more services).
+const CDS = ["/cd1.PNG", "/cd2.PNG", "/cd3.PNG"];
 const PHOTOS_PER_PAGE = 3;
 // Where each photo sits over the record on wide screens (as in the collage).
 const PHOTO_SPOTS = [
@@ -57,8 +59,16 @@ export function ServiceStage({
         className="pointer-events-none absolute top-16 left-[74%] z-20 hidden w-[7%] lg:block"
       />
 
+      <Image
+        src="/horse.png"
+        alt=""
+        width={300}
+        height={300}
+        className="pointer-events-none absolute top-[45%] left-[55%] hidden w-[20%] opacity-50 lg:block"
+      />
+
       {/* Wordmark: logo on top for small screens, behind the player on wide ones. */}
-      <h1 className="mx-auto mb-6 w-full max-w-xl lg:pointer-events-none lg:absolute lg:top-76 lg:left-[19%] lg:z-0 lg:mb-0 lg:w-[56%] lg:max-w-none">
+      <h1 className="mx-auto mb-6 w-full max-w-xl lg:pointer-events-none lg:absolute lg:top-150 lg:left-[19%] lg:z-0 lg:mb-0 lg:w-[56%] lg:max-w-none">
         <Image
           src="/wordmark.png"
           alt="Praew.Tattoos"
@@ -93,7 +103,10 @@ export function ServiceStage({
                 >
                   <button
                     type="button"
-                    onClick={() => setIndex(i)}
+                    onClick={() => {
+                      setIndex(i);
+                      setPlaying(true);
+                    }}
                     aria-pressed={i === index}
                     aria-label={`${service.name}, ${startAt(service.priceThb)}`}
                     className={cn(
@@ -135,14 +148,32 @@ export function ServiceStage({
 
       {/* Center: record-player card */}
       {current ? (
-        <div className="relative z-10 mx-auto mt-6 w-full max-w-80 bg-linen/50 p-6 lg:col-start-2 lg:row-start-2 lg:mt-14 lg:self-start">
-          <Image
-            src="/turntable.png"
-            alt="Red record player"
-            width={590}
-            height={450}
-            className="h-auto w-full shadow-sm"
-          />
+        <div className="relative z-10 mx-auto mt-6 w-full max-w-80 bg-linen/50 p-6 lg:col-start-2 lg:row-start-2 lg:self-start">
+          <div className="relative">
+            <Image
+              src="/turntable.png"
+              alt="Red record player"
+              width={590}
+              height={450}
+              className="h-auto w-full shadow-sm"
+            />
+            {/* Disc centred on the platter; spins while playing. */}
+            <div
+              key={current.id}
+              className="drop-in pointer-events-none absolute top-[51%] left-[44.6%] w-[62%] -translate-x-1/2 -translate-y-1/2"
+            >
+              <Image
+                src={CDS[index % CDS.length]}
+                alt=""
+                width={400}
+                height={419}
+                className={cn(
+                  "spin-slow h-auto w-full drop-shadow-[0_6px_10px_rgb(0_0_0/35%)]",
+                  !playing && "paused",
+                )}
+              />
+            </div>
+          </div>
           <div className="mt-5" aria-live="polite">
             <p className="font-semibold text-2xl text-brand uppercase leading-none">
               {current.name}
