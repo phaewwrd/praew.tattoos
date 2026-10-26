@@ -1,75 +1,46 @@
 "use server";
 
-import { and, eq, ne } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-import { db } from "@/db";
-import { appointments, slots } from "@/db/tattoo-schema";
-import { requireAdminSession } from "@/lib/admin-auth";
-import type { BookingStatus } from "@/services/bookings";
-import type { MutationResult } from "@/types/actions";
+import { createAction } from "@/lib/action";
+import {
+  adminBookingSchema,
+  updateBookingSchema,
+} from "@/lib/validation/booking";
+import { createAdminBooking, updateBooking } from "@/server/bookings";
 
-const statuses: BookingStatus[] = [
-	"PENDING_PAYMENT",
-	"CONFIRMED",
-	"COMPLETED",
-	"CANCELLED",
-	"NO_SHOW",
+const revalidate = [
+  "/",
+  "/admin",
+  "/admin/bookings",
+  "/admin/slots",
+  "/admin/customers",
 ];
 
-export async function updateBooking(
-	id: number,
-	status: BookingStatus,
-	notes: string,
-): Promise<MutationResult> {
-	await requireAdminSession();
-	if (
-		!Number.isSafeInteger(id) ||
-		id < 1 ||
-		!statuses.includes(status) ||
-		typeof notes !== "string" ||
-		notes.length > 10000
-	) {
-		return { ok: false, error: "Enter a valid booking status and notes." };
-	}
-	try {
-		const updated = await db.transaction(async (tx) => {
-			const [booking] = await tx
-				.select({ id: appointments.id, slotId: appointments.slotId })
-				.from(appointments)
-				.where(eq(appointments.id, id))
-				.for("update");
-			if (!booking) return false;
-			await tx
-				.update(appointments)
-				.set({ status, notes: notes.trim() || null })
-				.where(eq(appointments.id, id));
-			const [otherActiveBooking] = await tx
-				.select({ id: appointments.id })
-				.from(appointments)
-				.where(
-					and(
-						eq(appointments.slotId, booking.slotId),
-						ne(appointments.id, id),
-						ne(appointments.status, "CANCELLED"),
-					),
-				)
-				.limit(1);
-			await tx
-				.update(slots)
-				.set({
-					status:
-						status === "CANCELLED" && !otherActiveBooking
-							? "AVAILABLE"
-							: "BOOKED",
-				})
-				.where(eq(slots.id, booking.slotId));
-			return true;
-		});
-		if (!updated) return { ok: false, error: "Booking not found." };
-	} catch {
-		return { ok: false, error: "Unable to update this booking. Try again." };
-	}
-	revalidatePath("/admin/bookings");
-	revalidatePath("/admin/clients");
-	return { ok: true };
-}
+export const createAdminBookingAction = createAction(
+  adminBookingSchema,
+  async ({
+    firstName,
+    lastName,
+    email,
+    phone,
+    date,
+    time,
+    serviceId,
+    adminNote,
+    status,
+  }) =>
+    createAdminBooking({
+      date,
+      time,
+      status,
+      serviceId,
+      adminNote,
+      contact: { firstName, lastName, email, phone },
+    }),
+  { revalidate },
+);
+
+export const updateBookingAction = createAction(
+  updateBookingSchema,
+  async (input) => updateBooking(input),
+  { revalidate },
+);

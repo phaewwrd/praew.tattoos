@@ -3,8 +3,8 @@ import { cn } from "@/lib/utils";
 import { fieldClassName } from "./Input";
 
 export function Textarea({
-	className,
-	...props
+  className,
+  ...props
 }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
-	return <textarea className={cn(fieldClassName, className)} {...props} />;
+  return <textarea className={cn(fieldClassName, className)} {...props} />;
 }

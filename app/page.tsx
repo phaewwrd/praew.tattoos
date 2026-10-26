@@ -1,39 +1,47 @@
-import { AvailabilitySection } from "@/components/features/home/AvailabilitySection";
-import { ContactSection } from "@/components/features/home/ContactSection";
-import { HeroSection } from "@/components/features/home/HeroSection";
-import { LocationSection } from "@/components/features/home/LocationSection";
-import { PortfolioSection } from "@/components/features/home/PortfolioSection";
-import { ServicesSection } from "@/components/features/home/ServicesSection";
-import { SiteFooter } from "@/components/layouts/SiteFooter";
-import { SiteHeader } from "@/components/layouts/SiteHeader";
-import { getPortfolioGallery } from "@/services/portfolio";
-import { getTattooServices } from "@/services/services";
-import { getAvailableDatesAction } from "./actions/availability";
+import { BookingSection } from "@/components/site/BookingSection";
+import { InstagramStrip } from "@/components/site/InstagramStrip";
+import { ServiceStage } from "@/components/site/ServiceStage";
+import { SiteFooter } from "@/components/site/SiteFooter";
+import { SiteHeader } from "@/components/site/SiteHeader";
+import { toBangkokDate } from "@/lib/time";
+import { listMonthImages } from "@/server/content";
+import { getInstagramFeed } from "@/server/instagram";
+import { listServices } from "@/server/services";
+import { getPublicSettings } from "@/server/settings";
+import { listPublicSlots } from "@/server/slots";
+
+// Availability must always be current.
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
-	const [initialAvailableDates, tattooServices, portfolioGroups] =
-		await Promise.all([
-			getAvailableDatesAction(),
-			getTattooServices({ onlyActive: true }),
-			getPortfolioGallery(),
-		]);
-	tattooServices.sort((first, second) => first.sortOrder - second.sortOrder);
+  const [settings, services, slots, monthImages, feed] = await Promise.all([
+    getPublicSettings(),
+    listServices(),
+    listPublicSlots(),
+    listMonthImages(),
+    getInstagramFeed(),
+  ]);
 
-	return (
-		<div className="site-shell">
-			<SiteHeader />
-			<main id="top">
-				<HeroSection />
-				<PortfolioSection groups={portfolioGroups} />
-				<LocationSection />
-				<ServicesSection services={tattooServices} />
-				<AvailabilitySection
-					initialAvailableDates={initialAvailableDates}
-					services={tattooServices}
-				/>
-				<ContactSection />
-			</main>
-			<SiteFooter />
-		</div>
-	);
+  return (
+    <div className="flex min-h-dvh flex-col overflow-x-clip bg-cream">
+      <main className="relative mx-auto w-full max-w-[100rem]">
+        <SiteHeader settings={settings} />
+        <ServiceStage
+          services={services}
+          instagram={
+            <InstagramStrip feed={feed} handle={settings.instagramHandle} />
+          }
+        />
+        <BookingSection
+          initialSlots={slots}
+          today={toBangkokDate()}
+          monthImages={Object.fromEntries(
+            monthImages.map((m) => [m.month, m.url]),
+          )}
+          heartImageUrl={settings.heartImageUrl}
+        />
+      </main>
+      <SiteFooter settings={settings} />
+    </div>
+  );
 }

@@ -1,23 +1,64 @@
 {
-	"css": { "parser": { "tailwindDirectives": true } },
-	"linter": {
-		"rules": {
-			"a11y": {
-				"noLabelWithoutControl": {
-					"level": "error",
-					"options": { "inputComponents": ["Input", "Select", "Textarea"] }
-				}
-			}
-		}
-	},
-	"files": {
-		"includes": [
-			"**",
-			"!**/node_modules",
-			"!**/.next",
-			"!**/drizzle/meta",
-			"!**/*.tsbuildinfo",
-			"!**/next-env.d.ts"
-		]
-	}
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!**/.next",
+      "!**/drizzle/meta",
+      "!**/*.tsbuildinfo",
+      "!**/next-env.d.ts"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double"
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+      "nursery": {
+        "useSortedClasses": {
+          "level": "error",
+          "fix": "safe",
+          "options": {
+            "functions": ["cn", "clsx"]
+          }
+        }
+      },
+      "a11y": {
+        "noLabelWithoutControl": {
+          "level": "error",
+          "options": {
+            "inputComponents": ["Input", "Select", "Textarea"]
+          }
+        }
+      }
+    }
+  }
 }
