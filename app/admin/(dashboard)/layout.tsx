@@ -3,6 +3,11 @@ import { logoutAdminAction } from "@/app/admin/actions";
 import { AdminSidebar } from "@/components/layouts/AdminSidebar";
 import { requireAdminSession } from "@/lib/admin-auth";
 
+export const metadata = {
+  title: { template: "%s · Praew.Tattoos Admin", default: "Admin" },
+  robots: { index: false, follow: false },
+};
+
 export default async function AdminDashboardLayout({
   children,
 }: {
